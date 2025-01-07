@@ -1,0 +1,102 @@
+---
+// src/pages/books/[...slug].astro
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const books = await getCollection('books');
+  console.log(books)
+  return books.map(book => {
+    // Handle the file path format: "White Nights - Fyodor Dostoyevsky.md"
+    const pathSegments = book.id.split('/');
+    const filename = pathSegments[pathSegments.length - 1];
+    
+    // Remove .md and convert to kebab-case
+    const slug = filename
+      .replace(/\.md$/, '')
+      .toLowerCase()
+      .replace(/\s+[-]\s+/g, '-') // Handle " - " between title and author
+      .replace(/\s+/g, '-'); // Handle remaining spaces
+      
+    return {
+      params: { slug: book.id},
+      props: { book },
+    };
+  });
+}
+
+const { book } = Astro.props;
+const { title, author, publisher, publish, isbn, status, topics, cover } = book.data;
+
+// Format date for display
+const dateCompleted = book.data['date-completed'] ? new Date(book.data['date-completed']).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}) : 'In Progress';
+
+const {Content, headings} = await render(book);
+---
+
+<BaseLayout title={`${title} - Book Notes`}>
+  <div class="max-w-4xl mx-auto px-8">
+    <!-- Book Header -->
+    <header class="mt-16 mb-12 border-b-[1px] border-black/20 pb-8">
+      <div class="font-mono text-xs mb-4 opacity-70">Book Note • {dateCompleted}</div>
+      <div class="grid grid-cols-12 gap-8">
+        <!-- Book Cover -->
+        <div class="col-span-3">
+          <img 
+            src={cover} 
+            alt={`Cover of ${title}`}
+            class="w-full shadow-lg"
+          />
+        </div>
+        
+        <!-- Book Details -->
+        <div class="col-span-9">
+          <h1 class="font-serif text-5xl mb-6 leading-tight">{title}</h1>
+          <div class="font-mono text-sm space-y-2 opacity-70">
+            <p>By {author.join(', ')}</p>
+            {publisher && <p>Published by {publisher}, {new Date(publish).getFullYear()}</p>}
+            {isbn && <p>ISBN: {isbn}</p>}
+            <p>Status: {status}</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Topics -->
+    {topics && topics.length > 0 && (
+      <div class="mb-12">
+        <div class="font-mono text-xs uppercase tracking-widest mb-4 opacity-70">Topics of Discussion</div>
+        <div class="flex gap-3 flex-wrap">
+          {topics.map(topic => {
+            const topicName = topic.match(/\[\[([^\]]+)\]\]/)?.[1] || topic;
+            return (
+              <a 
+                href={`/topics/${topicName.toLowerCase()}`}
+                class="font-mono text-xs px-3 py-1 border border-black/20 rounded-full hover:bg-black/5 transition-colors"
+              >
+                {topicName}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    <!-- Main Content -->
+    <article class="prose prose-lg max-w-none">
+       <Content/>
+    </article>
+
+    <!-- Footer -->
+    <footer class="mt-24 mb-16 pt-8 border-t-[1px] border-black/20">
+      <div class="font-mono text-xs text-center opacity-70">
+        Part of the digital garden collection
+      </div>
+    </footer>
+  </div>
+</BaseLayout>

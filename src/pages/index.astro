@@ -1,12 +1,8 @@
 ---
-// src/pages/index.astro
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const essays = (await getCollection('essays'))
-  .slice(0, 3);
-
-// Get unique topics from all essays
+const essays = (await getCollection('essays')).slice(0, 4);
 const allEssays = await getCollection('essays');
 const topics = [...new Set(allEssays.flatMap(essay => 
   essay.data.topics.map(topic => {
@@ -23,128 +19,124 @@ const today = new Date().toLocaleDateString('en-US', {
 ---
 
 <BaseLayout title="In Two Minds">
-  <div class="max-w-5xl mx-auto px-8">
-    <!-- Masthead -->
-    <header class="mt-16 mb-24 border-b-[3px] border-black pb-8">
-      <div class="font-mono text-xs mb-4 opacity-70">Vol. II • {today}</div>
-      <h1 class="font-serif text-8xl mb-8 leading-none">IN TWO MINDS</h1>
-      <div class="font-mono text-xs tracking-widest">
-        DISCOURSES ON PHILOSOPHY, ETHICS & SYSTEMS
+  <!-- Main container -->
+  <div class="max-w-6xl mx-auto px-4 md:px-8">
+    <!-- Hero section -->
+    <section class="mt-12 md:mt-24 mb-24">
+      <!-- Issue number and date -->
+      <div class="mb-8">
+        <div class="inline-block border border-black px-3 py-1">
+          <span class="font-mono text-xs">VOL. II • {today}</span>
+        </div>
       </div>
-    </header>
-
-    <!-- Introduction -->
-    <section class="mb-24 max-w-2xl">
-      <p class="text-lg leading-relaxed mb-8">
-        Welcome to In Two Minds, a digital garden dedicated to exploring the depths of philosophy, ethics, and systems thinking. Here, I explore trains of thought, or take on certain personas, perhaps playing a devils advocate, and provide extracts from books and explore their ideas from differnt lenses. My goal, foremost, is to provide a place for my thoughts to accumulate and develop with time. Also, to expand my writing ability. I will examine ideas from multiple perspectives, challenge assumptions, and delve into various trains of thought—regardless of controversy or popular opinion. The nature of two minds is a digital garden, therefore, some notes may not be complete. Some notes may not be my actual opinion but more a thought experiment.
-      </p>
-
-      <div class="font-mono text-sm">
-        <div class="uppercase tracking-widest mb-4 opacity-70">Inspiration</div>
-        <p class="mb-4 opacity-80">Some other blogs and digital gardens which were the inspiration for this Journey which started in late 2022:</p>
-        
-        <ul class="space-y-2 opacity-70">
-          <li>
-            <span class="mr-2">→</span>
-            <a href="https://notes.andymatuschak.org" class="hover:underline">Andy Matuschak's Notes</a>
-          </li>
-          <li>
-            <span class="mr-2">→</span>
-            <a href="https://gwern.net" class="hover:underline">Gwern</a>
-          </li>
-          <li>
-            <span class="mr-2">→</span>
-            <a href="https://azlen.me" class="hover:underline">Azlen Elza</a>
-          </li>
-          <li>
-            <span class="mr-2">→</span>
-            <a href="https://lesswrong.com" class="hover:underline">Less Wrong</a>
-          </li>
-          <li>
-            <span class="mr-2">→</span>
-            <a href="https://100r.co" class="hover:underline">100r</a>
-          </li>
-          <li>
-            <span class="mr-2">→</span>
-            <a href="https://fromjason.xyz" class="hover:underline">From Jason</a>
-          </li>
-          <li>
-            <span class="mr-2">→</span>
-            <a href="https://bagerbach.com" class="hover:underline">Bager Bach</a>
-          </li>
-        </ul>
+      
+      <!-- Title and subtitle -->
+      <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl mb-8 leading-none">
+        IN TWO<br>MINDS
+      </h1>
+      <div class="max-w-xl">
+        <p class="font-mono text-sm leading-relaxed border-l-2 border-black pl-4">
+          A digital garden exploring the depths of philosophy, ethics, and systems thinking through multiple lenses and personas.
+        </p>
       </div>
     </section>
 
-    <!-- Main Content -->
-    <div class="grid grid-cols-12 gap-8">
-      <!-- Left Column - Topics -->
-      <aside class="col-span-3 font-mono text-xs">
-        <div class="sticky top-8">
-          <h2 class="uppercase tracking-widest mb-8 opacity-70">Topics of Inquiry</h2>
-          <ul class="space-y-4">
-            {topics.map(topic => (
-              <li>
-                <a href={`/topics/${topic.toLowerCase()}`} 
-                   class="group flex items-center hover:translate-x-2 transition-transform duration-300">
-                  <span class="opacity-50 mr-2">→</span>
-                  <span class="group-hover:underline">{topic}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
+    <!-- Featured Essays -->
+    <section class="mb-24">
+      <div class="border-t-2 border-b-2 border-black py-12">
+        <div class="grid md:grid-cols-2 gap-12 md:gap-24">
+          {essays.map((essay, index) => (
+            <article class="group">
+              <a href={`/essays/${essay.id.replace(/\.md$/, '').toLowerCase().replace(/\s+/g, '-')}`} 
+                 class="block">
+                <div class="font-mono text-xs mb-4 flex items-center">
+                  <span class="opacity-50 mr-4">{String(index + 1).padStart(2, '0')}</span>
+                  <span class="opacity-70">{essay.data.date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long'
+                  })}</span>
+                </div>
+                <h2 class="font-serif text-2xl md:text-3xl mb-4 leading-tight group-hover:translate-x-2 transition-all">
+                  {essay.data.title}
+                </h2>
+                <div class="font-mono text-xs opacity-70 mb-4">By {essay.data.persona}</div>
+                <p class="text-sm opacity-70">{essay.data.summary}</p>
+              </a>
+            </article>
+          ))}
         </div>
-      </aside>
+      </div>
+    </section>
 
-      <!-- Middle Column - Latest Essays -->
-      <section class="col-span-6 border-x-[1px] border-black/20 px-8">
-        <div class="font-mono text-xs mb-16 uppercase tracking-widest">Latest Discourses</div>
-        
-        {essays.map((essay, index) => (
-          <article class="mb-24 last:mb-0">
-            <div class="flex items-start gap-4 group">
-              <div class="font-mono text-xs opacity-50 pt-2">
-                {String(index + 1).padStart(2, '0')}
-              </div>
-              <div class="flex-1">
-                <a href={`/essays/${essay.id.replace(/\.md$/, '').toLowerCase().replace(/\s+/g, '-')}`} 
-                   class="block group-hover:translate-x-2 transition-transform duration-300">
-                  <h2 class="font-serif text-4xl mb-4 leading-tight">
-                    {essay.data.title}
-                  </h2>
-                  <div class="font-mono text-xs opacity-70 mb-4">
-                    By {essay.data.persona} • {essay.data.date.toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </div>
-                  <p class="text-sm opacity-70 mb-4">{essay.data.summary}</p>
-                  <div class="w-16 h-[1px] bg-black/50 group-hover:w-full transition-all duration-500"></div>
-                </a>
-              </div>
-            </div>
-          </article>
-        ))}
+    <!-- Topics and Quote Grid -->
+    <div class="grid md:grid-cols-2 gap-12 md:gap-24 mb-24">
+      <!-- Topics -->
+      <section>
+        <h2 class="font-mono text-xs uppercase tracking-widest mb-8">Topics of Inquiry</h2>
+        <div class="grid grid-cols-2 gap-4">
+          {topics.map(topic => (
+            <a href={`/topics/${topic.toLowerCase()}`} 
+               class="group flex items-center">
+              <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity">
+                <span class="mr-2">→</span>
+                {topic}
+              </span>
+            </a>
+          ))}
+        </div>
       </section>
 
-      <!-- Right Column - Quote -->
-      <aside class="col-span-3 font-serif">
-        <div class="sticky top-8">
-          <blockquote class="text-lg italic leading-relaxed">
-            "The philosopher is not a citizen of any community of ideas. That is what makes him a philosopher."
-            <footer class="text-sm mt-4 not-italic">
-              — Ludwig Wittgenstein
-            </footer>
-          </blockquote>
-        </div>
-      </aside>
+      <!-- Quote -->
+      <section>
+        <h2 class="font-mono text-xs uppercase tracking-widest mb-8">Featured Quote</h2>
+        <blockquote class="font-serif text-xl italic leading-relaxed">
+          "The philosopher is not a citizen of any community of ideas. That is what makes him a philosopher."
+          <footer class="text-sm mt-4 not-italic opacity-70">
+            — Ludwig Wittgenstein
+          </footer>
+        </blockquote>
+      </section>
     </div>
 
+    <!-- About Section -->
+    <section class="mb-24">
+      <div class="max-w-2xl">
+        <h2 class="font-mono text-xs uppercase tracking-widest mb-8">About this Garden</h2>
+        <p class="text-lg mb-8">
+          Here, I take on different personas and explore trains of thought, perhaps playing devil's advocate, providing extracts from books and exploring their ideas through different lenses. My goal is to create a space where thoughts can accumulate and develop over time.
+        </p>
+        <div class="font-mono text-sm">
+          <div class="mb-4 opacity-70">Notable inspirations:</div>
+          <ul class="grid grid-cols-2 gap-4">
+            <li>
+              <a href="https://notes.andymatuschak.org" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
+                <span class="mr-2">→</span>Andy Matuschak's Notes
+              </a>
+            </li>
+            <li>
+              <a href="https://gwern.net" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
+                <span class="mr-2">→</span>Gwern
+              </a>
+            </li>
+            <li>
+              <a href="https://lesswrong.com" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
+                <span class="mr-2">→</span>Less Wrong
+              </a>
+            </li>
+            <li>
+              <a href="https://100r.co" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
+                <span class="mr-2">→</span>100r
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <!-- Footer -->
-    <footer class="mt-32 mb-16 pt-8 border-t-[1px] border-black/20">
-      <div class="font-mono text-xs text-center opacity-70">
-        Published in the depths of the digital underground
+    <footer class="border-t border-black/20 py-8">
+      <div class="font-mono text-xs text-center">
+        <span class="opacity-70">Published in the depths of the digital underground</span>
       </div>
     </footer>
   </div>
