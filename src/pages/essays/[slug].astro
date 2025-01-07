@@ -5,10 +5,18 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 // Generate static paths for all essays
 export async function getStaticPaths() {
   const essays = await getCollection('essays');
-  return essays.map(essay => ({
-    params: { slug: essay.id },
-    props: { essay },
-  }));
+  return essays.map(essay => {
+    // Remove file extension and convert to URL-friendly format
+    const slug = essay.id
+      .replace(/\.md$/, '')
+      .toLowerCase()
+      .replace(/\s+/g, '-');
+      
+    return {
+      params: { slug },
+      props: { essay },
+    };
+  });
 }
 
 // Get the essay data from props
