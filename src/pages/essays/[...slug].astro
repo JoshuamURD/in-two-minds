@@ -1,0 +1,63 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Generate static paths for all essays
+export async function getStaticPaths() {
+  const essays = await getCollection('essays');
+  return essays.map(essay => ({
+    params: { slug: essay.id },
+    props: { essay },
+  }));
+}
+
+// Get the essay data from props
+const { essay } = Astro.props;
+
+// Render the essay content
+const {Content, headings} = await render(essay);
+---
+
+<BaseLayout title={essay.data.title}>
+  <article class="max-w-prose mx-auto">
+    <header class="mb-16">
+      <div class="font-mono text-sm mb-4 opacity-50">
+        {essay.data.date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}
+      </div>
+      
+      <h1 class="text-5xl mb-8">
+        {essay.data.title}
+      </h1>
+
+      {essay.data.summary && (
+        <p class="text-xl opacity-75 italic">
+          {essay.data.summary}
+        </p>
+      )}
+    </header>
+
+    <div class="prose prose-lg">
+      <Content />
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-white/10">
+      <div class="font-mono text-sm">
+        Written by {essay.data.persona}
+      </div>
+      
+      {essay.data.topics.length > 0 && (
+        <div class="mt-4 flex gap-2 flex-wrap">
+          {essay.data.topics.map(topic => (
+            <span class="px-2 py-1 bg-white/5 rounded text-sm">
+              {topic}
+            </span>
+          ))}
+        </div>
+      )}
+    </footer>
+  </article>
+</BaseLayout>

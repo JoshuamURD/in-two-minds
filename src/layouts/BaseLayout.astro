@@ -1,0 +1,45 @@
+---
+// src/layouts/BaseLayout.astro
+import ClientRouter from 'astro/components/ClientRouter.astro';
+
+interface Props {
+title: string;
+description?: string;
+}
+
+const { title, description = "A neo-renaissance, philosophical and brutalist blog" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="generator" content={Astro.generator} />
+  <meta name="description" content={description} />
+  <title>{title}</title>
+  <ClientRouter />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      font-family: 'Cormorant Garamond', serif;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <main>
+    <slot />
+  </main>
+</body>
+</html>
