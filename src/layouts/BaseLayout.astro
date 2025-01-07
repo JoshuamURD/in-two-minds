@@ -38,33 +38,109 @@ const { title, description = "A neo-renaissance, philosophical and brutalist blo
   </style>
 </head>
 <body class="min-h-screen">
- <header class="border-b border-black/20">
-    <nav class="max-w-5xl mx-auto px-8 py-4">
-      <ul class="flex items-center justify-end space-x-8 font-mono text-xs tracking-widest">
+<header class="border-b border-black/20">
+  <nav class="max-w-6xl mx-auto px-4 md:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo/Home Link -->
+      <a href="/" class="font-mono text-xs tracking-widest hover:opacity-70 transition-opacity">
+        IN TWO MINDS
+      </a>
+
+      <!-- Desktop Navigation -->
+      <ul class="hidden md:flex items-center space-x-8 font-mono text-xs tracking-widest">
         <li>
-          <a href="/" class="opacity-70 hover:opacity-100 transition-opacity duration-300">
-            <span class="mr-2">←</span>HOME
+          <a href="/essays" class="group flex items-center opacity-70 hover:opacity-100 transition-opacity">
+            <span class="mr-2 group-hover:rotate-12 transition-transform">⌘</span>
+            <span class="hover:translate-x-0.5 transition-transform">ESSAYS</span>
           </a>
         </li>
         <li>
-          <a href="/essays" class="opacity-70 hover:opacity-100 transition-opacity duration-300">
-            <span class="mr-2">⌘</span>ESSAYS
-          </a>
-        </li>
-          <a href="/topics" class="opacity-70 hover:opacity-100 transition-opacity duration-300">
-            <span class="mr-2">⌥</span>TOPICS
+          <a href="/books" class="group flex items-center opacity-70 hover:opacity-100 transition-opacity">
+            <span class="mr-2 group-hover:rotate-12 transition-transform">⌥</span>
+            <span class="hover:translate-x-0.5 transition-transform">BOOKS</span>
           </a>
         </li>
         <li>
-          <a href="/about" class="opacity-70 hover:opacity-100 transition-opacity duration-300">
-            <span class="mr-2">⊕</span>ABOUT
+          <a href="/topics" class="group flex items-center opacity-70 hover:opacity-100 transition-opacity">
+            <span class="mr-2 group-hover:rotate-12 transition-transform">◯</span>
+            <span class="hover:translate-x-0.5 transition-transform">TOPICS</span>
+          </a>
+        </li>
+        <li>
+          <a href="/about" class="group flex items-center opacity-70 hover:opacity-100 transition-opacity">
+            <span class="mr-2 group-hover:rotate-12 transition-transform">⊕</span>
+            <span class="hover:translate-x-0.5 transition-transform">ABOUT</span>
           </a>
         </li>
       </ul>
-    </nav>
-  </header>
+
+      <!-- Mobile Menu Button -->
+      <button 
+        type="button"
+        class="md:hidden group p-2 -mr-2"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        id="mobile-menu-button"
+      >
+        <span class="sr-only">Open menu</span>
+        <div class="flex flex-col space-y-1.5 w-6">
+          <span class="w-full h-px bg-black transition-transform origin-right group-aria-expanded:rotate-45"></span>
+          <span class="w-full h-px bg-black transition-opacity group-aria-expanded:opacity-0"></span>
+          <span class="w-full h-px bg-black transition-transform origin-right group-aria-expanded:-rotate-45"></span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div 
+      class="hidden md:hidden" 
+      id="mobile-menu"
+    >
+      <div class="pb-4 pt-2 border-t border-black/20">
+        <ul class="space-y-4 font-mono text-xs tracking-widest">
+          <li>
+            <a href="/essays" class="flex items-center py-2 opacity-70 hover:opacity-100 transition-opacity">
+              <span class="mr-2">⌘</span>
+              <span>ESSAYS</span>
+            </a>
+          </li>
+          <li>
+            <a href="/books" class="flex items-center py-2 opacity-70 hover:opacity-100 transition-opacity">
+              <span class="mr-2">⌥</span>
+              <span>BOOKS</span>
+            </a>
+          </li>
+          <li>
+            <a href="/topics" class="flex items-center py-2 opacity-70 hover:opacity-100 transition-opacity">
+              <span class="mr-2">◯</span>
+              <span>TOPICS</span>
+            </a>
+          </li>
+          <li>
+            <a href="/about" class="flex items-center py-2 opacity-70 hover:opacity-100 transition-opacity">
+              <span class="mr-2">⊕</span>
+              <span>ABOUT</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
   <main>
     <slot />
   </main>
 </body>
+<script>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', () => {
+      const expanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+      mobileMenuButton.setAttribute('aria-expanded', !expanded);
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
+</script>
 </html>

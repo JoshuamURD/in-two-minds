@@ -1,0 +1,124 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const books = await getCollection('books');
+
+// Sort books by read status and then by date
+const sortedBooks = books.sort((a, b) => {
+  // First sort by status (reading/read first)
+  const statusOrder = {
+    'Reading': 0,
+    'reading': 0,
+    'Read': 1,
+    'read': 1,
+    'unread': 2,
+    'On hold': 3,
+    'Listening': 4
+  };
+  
+  const statusDiff = statusOrder[a.data.status] - statusOrder[b.data.status];
+  if (statusDiff !== 0) return statusDiff;
+  
+  // Then sort by date (newest first)
+  return b.data.created.getTime() - a.data.created.getTime();
+});
+
+// Group books by status
+const groupedBooks = sortedBooks.reduce((acc, book) => {
+  const status = book.data.status.toLowerCase();
+  if (!acc[status]) acc[status] = [];
+  acc[status].push(book);
+  return acc;
+}, {});
+
+const statusDisplayOrder = ['reading', 'read', 'unread', 'on hold', 'listening'];
+
+// Get all unique topics
+const allTopics = [...new Set(books.flatMap(book => book.data.topics || []))].sort();
+---
+
+<BaseLayout title="Library • In Two Minds">
+  <div class="max-w-6xl mx-auto px-4 md:px-8">
+    <!-- Header -->
+    <section class="mt-12 md:mt-24 mb-24">
+      <div class="mb-8">
+        <div class="inline-block border border-black px-3 py-1">
+          <span class="font-mono text-xs">LIBRARY</span>
+        </div>
+      </div>
+      
+      <h1 class="font-serif text-4xl md:text-6xl mb-8 leading-none">Digital Library</h1>
+      <div class="max-w-xl">
+        <p class="font-mono text-sm leading-relaxed border-l-2 border-black pl-4">
+          A curated collection of books with notes, analyses, and key insights. Each book is a portal to new ideas and perspectives.
+        </p>
+      </div>
+    </section>
+
+    <!-- Topics Filter -->
+    <section class="mb-16">
+      <h2 class="font-mono text-xs uppercase tracking-widest mb-6">Browse by Topic</h2>
+      <div class="flex flex-wrap gap-3">
+        {allTopics.map(topic => (
+          <button class="font-mono text-xs border border-black/20 px-3 py-1 hover:border-black transition-colors">
+            {topic}
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <!-- Books Grid -->
+    {statusDisplayOrder.map(status => {
+      const booksInStatus = groupedBooks[status] || [];
+      if (booksInStatus.length === 0) return null;
+      
+      return (
+        <section class="mb-24">
+          <h2 class="font-mono text-xs uppercase tracking-widest mb-8">{status === 'read' ? 'Read & Reviewed' : status}</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {booksInStatus.map(book => (
+              <article class="group">
+                <a href={`/books/${book.slug}`} class="block">
+                  <div class="aspect-[3/4] mb-6 overflow-hidden border border-black/20 group-hover:border-black transition-colors">
+                    <img 
+                      src={book.data.cover} 
+                      alt={`Cover of ${book.data.title}`}
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  <h3 class="font-serif text-xl md:text-2xl mb-2 leading-tight group-hover:translate-x-2 transition-transform">
+                    {book.data.title}
+                  </h3>
+                  
+                  <div class="font-mono text-xs opacity-70 mb-2">
+                    by {book.data.author.join(', ')}
+                  </div>
+                  
+                  {book.data.topics && (
+                    <div class="flex flex-wrap gap-2">
+                      {book.data.topics.map(topic => (
+                        <span class="font-mono text-xs border border-black/20 px-2 py-1">
+                          {topic}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </a>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    })}
+
+    <!-- Footer -->
+    <footer class="border-t border-black/20 py-8">
+      <div class="font-mono text-xs text-center">
+        <span class="opacity-70">A collection of thoughts and learnings from literature</span>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>
