@@ -1,0 +1,106 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from 'astro:content';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export const getStaticPaths = (async () => {
+  const allEssays = await getCollection('essays');
+  
+  // Extract all unique topics and create slugs
+  const topics = [...new Set(allEssays.flatMap(essay => 
+    essay.data.topics.map(topic => {
+      // Handle wiki-style links like [Philosophy](Philosophy.md)
+      const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      return match ? match[1] : topic;
+    })
+  ))];
+
+  // Create URL-friendly slugs and maintain original names
+  return topics.map(topic => ({
+    params: { 
+      topic: topic
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+    },
+    props: { topicName: topic }
+  }));
+}) satisfies GetStaticPaths;
+
+const { topicName } = Astro.props;
+
+// Get all essays for this topic
+const allEssays = await getCollection('essays');
+const topicEssays = allEssays.filter(essay => 
+  essay.data.topics.some(topic => {
+    const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
+    const cleanTopic = match ? match[1] : topic;
+    return cleanTopic === topicName;
+  })
+);
+
+// Sort essays by date
+const sortedEssays = topicEssays.sort((a, b) => 
+  b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<BaseLayout title={`${topicName} - In Two Minds`}>
+  <div class="max-w-4xl mx-auto px-8">
+    <!-- Header -->
+    <header class="mt-16 mb-24 border-b-[3px] border-black pb-8">
+      <div class="font-mono text-xs mb-4 opacity-70">Topic</div>
+      <h1 class="font-serif text-6xl mb-8 leading-none">{topicName}</h1>
+      <div class="font-mono text-xs">
+        {sortedEssays.length} {sortedEssays.length === 1 ? 'essay' : 'essays'}
+      </div>
+    </header>
+
+    <!-- Essays List -->
+    <section>
+      {sortedEssays.map((essay, index) => (
+        <article class="mb-16 last:mb-0">
+          <div class="flex items-start gap-4 group">
+            <div class="font-mono text-xs opacity-50 pt-2">
+              {String(index + 1).padStart(2, '0')}
+            </div>
+            <div class="flex-1">
+              <a href={`/essays/${essay.id.replace(/\.md$/, '').toLowerCase().replace(/\s+/g, '-')}`} 
+                 class="block group-hover:translate-x-2 transition-transform duration-300">
+                <h2 class="font-serif text-3xl mb-4 leading-tight">
+                  {essay.data.title}
+                </h2>
+                <div class="font-mono text-xs opacity-70 mb-4">
+                  By {essay.data.persona} • {essay.data.date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </div>
+                {essay.data.summary && (
+                  <p class="text-sm opacity-70 mb-4">{essay.data.summary}</p>
+                )}
+                <div class="w-16 h-[1px] bg-black/50 group-hover:w-full transition-all duration-500"></div>
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+
+      {sortedEssays.length === 0 && (
+        <div class="text-center py-16 opacity-70">
+          <p class="font-mono text-sm">No essays found for this topic yet.</p>
+        </div>
+      )}
+    </section>
+
+    <!-- Back Link -->
+    <footer class="mt-16 mb-16 pt-8 border-t-[1px] border-black/20">
+      <div class="font-mono text-xs">
+        <a href="/" class="opacity-70 hover:opacity-100 hover:underline">
+          ← Back to home
+        </a>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>
