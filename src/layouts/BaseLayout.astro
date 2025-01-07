@@ -38,6 +38,32 @@ const { title, description = "A neo-renaissance, philosophical and brutalist blo
   </style>
 </head>
 <body class="min-h-screen">
+ <header class="border-b border-black/20">
+    <nav class="max-w-5xl mx-auto px-8 py-4">
+      <ul class="flex items-center justify-end space-x-8 font-mono text-xs tracking-widest">
+        <li>
+          <a href="/" class="opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <span class="mr-2">←</span>HOME
+          </a>
+        </li>
+        <li>
+          <a href="/essays" class="opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <span class="mr-2">⌘</span>ESSAYS
+          </a>
+        </li>
+        <li>
+          <a href="/topics" class="opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <span class="mr-2">⌥</span>TOPICS
+          </a>
+        </li>
+        <li>
+          <a href="/about" class="opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <span class="mr-2">⊕</span>ABOUT
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
   <main>
     <slot />
   </main>

@@ -8,7 +8,13 @@ const essays = (await getCollection('essays'))
 
 // Get unique topics from all essays
 const allEssays = await getCollection('essays');
-const topics = [...new Set(allEssays.flatMap(essay => essay.data.topics))].sort();
+const topics = [...new Set(allEssays.flatMap(essay => 
+  essay.data.topics.map(topic => {
+    // Handle wiki-style links like [Philosophy](Philosophy.md)
+    const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
+    return match ? match[1] : topic; // Return just the topic name without the link
+  })
+))].sort();
 
 const today = new Date().toLocaleDateString('en-US', {
   year: 'numeric',

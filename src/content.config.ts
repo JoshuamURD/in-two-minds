@@ -12,11 +12,11 @@ const essays = defineCollection({
     tags: z.array(z.string()),
     persona: z.string().default("Anonymous"),
     date: z.coerce.date(),
-    draft: z.boolean().default(true),
-    status: z.string().default("WIP").optional(),
+    draft: z.boolean().default(true).optional(),
+    status: z.string().default("WIP").optional().nullable(),
     topics: z.array(z.string()),
-    related: z.array(z.string()).optional(),
-    summary: z.string(),
+    related: z.array(z.string()).optional().nullable(),
+    summary: z.string().nullable(),
   }),
 });
 

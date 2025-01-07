@@ -1,0 +1,97 @@
+---
+// src/pages/essays.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Get all non-draft essays and sort by date
+const essays = (await getCollection('essays', ({ data }) => {
+  return data.draft;
+})).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Essays | Neo-Renaissance Blog">
+  <div class="space-y-16">
+    <header class="mb-24">
+      <h1 class="font-normal text-4xl mb-4">Essays</h1>
+      <p class="text-lg opacity-70 max-w-2xl">
+        A collection of philosophical musings and critical observations on the intersection 
+        of technology, society, and human nature.
+      </p>
+    </header>
+
+    <div class="grid gap-12">
+      {essays.map((essay) => (
+        <article 
+          class="group relative"
+          data-summary={essay.data.summary}
+        >
+          <div class="flex justify-between items-baseline">
+            <h2 class="text-2xl font-normal group-hover:opacity-70 transition-opacity duration-300">
+              <a href={`/essays/${essay.id}`} class="inline-block">
+                {essay.data.title}
+              </a>
+            </h2>
+            <time 
+              datetime={essay.data.date.toISOString()} 
+              class="font-mono text-xs opacity-50"
+            >
+              {essay.data.date.toLocaleDateString('en-US', { 
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </time>
+          </div>
+
+          <div class="mt-2 flex items-center gap-4">
+            <div class="font-mono text-xs opacity-70">
+              {essay.data.persona}
+            </div>
+            <div class="flex gap-2">
+              {essay.data.topics.map((topic) => (
+                <span class="font-mono text-xs px-2 py-1 bg-black/5 rounded">
+                  {topic}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <!-- Hover Preview -->
+          <div class="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute left-0 top-full mt-2 p-6 bg-white shadow-lg max-w-xl z-10 border border-black/10">
+            <p class="text-base opacity-70">
+              {essay.data.summary}
+            </p>
+            {essay.data.related && essay.data.related.length > 0 && (
+              <div class="mt-4 pt-4 border-t border-black/10">
+                <div class="font-mono text-xs opacity-50 mb-2">Related Essays</div>
+                <ul class="text-sm">
+                  {essay.data.related.map((title) => (
+                    <li class="opacity-70">{title}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <style>
+    /* Ensure preview cards stay in viewport */
+    article {
+      container-type: inline-size;
+    }
+    
+    @container (max-width: 400px) {
+      .group:hover .absolute {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 90vw;
+        max-width: 400px;
+      }
+    }
+  </style>
+</BaseLayout>
