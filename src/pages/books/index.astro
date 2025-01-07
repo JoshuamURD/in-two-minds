@@ -25,7 +25,7 @@ const sortedBooks = books.sort((a, b) => {
 });
 
 // Group books by status
-const groupedBooks = sortedBooks.reduce((acc, book) => {
+const groupedBooks = sortedBooks.reduce<Record<string, typeof books>>((acc, book) => {
   const status = book.data.status.toLowerCase();
   if (!acc[status]) acc[status] = [];
   acc[status].push(book);
@@ -35,7 +35,14 @@ const groupedBooks = sortedBooks.reduce((acc, book) => {
 const statusDisplayOrder = ['reading', 'read', 'unread', 'on hold', 'listening'];
 
 // Get all unique topics
-const allTopics = [...new Set(books.flatMap(book => book.data.topics || []))].sort();
+const allTopics = [
+  ...new Set(
+    books
+      .flatMap((book) => book.data.topics || [])
+      .map((topic) => topic.replace(/\[\[|\]\]/g, ''))
+  ),
+].sort();
+
 ---
 
 <BaseLayout title="Library • In Two Minds">
@@ -61,9 +68,9 @@ const allTopics = [...new Set(books.flatMap(book => book.data.topics || []))].so
       <h2 class="font-mono text-xs uppercase tracking-widest mb-6">Browse by Topic</h2>
       <div class="flex flex-wrap gap-3">
         {allTopics.map(topic => (
-          <button class="font-mono text-xs border border-black/20 px-3 py-1 hover:border-black transition-colors">
+          <a href={`/topics/${topic.toLowerCase()}`} class="font-mono text-xs border border-black/20 px-3 py-1 hover:border-black transition-colors">
             {topic}
-          </button>
+          </a>
         ))}
       </div>
     </section>
@@ -80,7 +87,7 @@ const allTopics = [...new Set(books.flatMap(book => book.data.topics || []))].so
           <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             {booksInStatus.map(book => (
               <article class="group">
-                <a href={`/books/${book.slug}`} class="block">
+                <a href={`/books/${book.id}`} class="block">
                   <div class="aspect-[3/4] mb-6 overflow-hidden border border-black/20 group-hover:border-black transition-colors">
                     <img 
                       src={book.data.cover} 
@@ -101,7 +108,7 @@ const allTopics = [...new Set(books.flatMap(book => book.data.topics || []))].so
                     <div class="flex flex-wrap gap-2">
                       {book.data.topics.map(topic => (
                         <span class="font-mono text-xs border border-black/20 px-2 py-1">
-                          {topic}
+                          {topic.replace(/\[\[|\]\]/g, '')}
                         </span>
                       ))}
                     </div>
