@@ -7,9 +7,14 @@ import { getCollection } from 'astro:content';
 const essays = (await getCollection('essays', ({ data }) => {
   return data.draft;
 })).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  
+const extractTextFromMarkdownLink = (markdownLink: string) => {
+    const match = markdownLink.match(/\[(.*?)\]/);
+    return match ? match[1] : markdownLink;
+  };
 ---
 
-<BaseLayout title="Essays | Neo-Renaissance Blog">
+<BaseLayout title="In Two Minds | Essays">
   <div class="space-y-16">
     <header class="mb-24">
       <h1 class="font-normal text-4xl mb-4">Essays</h1>
@@ -50,7 +55,7 @@ const essays = (await getCollection('essays', ({ data }) => {
             <div class="flex gap-2">
               {essay.data.topics.map((topic) => (
                 <span class="font-mono text-xs px-2 py-1 bg-black/5 rounded">
-                  {topic}
+                  {extractTextFromMarkdownLink(topic)}
                 </span>
               ))}
             </div>
