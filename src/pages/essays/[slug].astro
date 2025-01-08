@@ -2,75 +2,379 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-// Generate static paths for all essays
 export async function getStaticPaths() {
   const essays = await getCollection('essays');
-  return essays.map(essay => {
-    // Remove file extension and convert to URL-friendly format
-    const slug = essay.id
-      .replace(/\.md$/, '')
-      .toLowerCase()
-      .replace(/\s+/g, '-');
-      
-    return {
-      params: { slug },
-      props: { essay },
-    };
-  });
+  return essays.map(essay => ({
+    params: { slug: essay.id.replace(/\.md$/, '').toLowerCase().replace(/\s+/g, '-') },
+    props: { essay },
+  }));
 }
 
+// Utility functions
 const extractTextFromMarkdownLink = (markdownLink: string) => {
-    const match = markdownLink.match(/\[(.*?)\]/);
-    return match ? match[1] : markdownLink;
+  const match = markdownLink.match(/\[(.*?)\]/);
+  return match ? match[1] : markdownLink;
+};
+
+const calculateReadingTime = (content: string): { wordCount: number; readingTime: number } => {
+  if (!content) return { wordCount: 0, readingTime: 0 };
+  const wordsPerMinute = 200;
+  const wordCount = content.trim().split(/\s+/).length;
+  return { 
+    wordCount, 
+    readingTime: Math.ceil(wordCount / wordsPerMinute) 
   };
+};
 
-// Get the essay data from props
+// Component props and data
 const { essay } = Astro.props;
+const { Content, headings } = await render(essay);
+const { wordCount, readingTime } = calculateReadingTime(essay.body ?? '');
 
-// Render the essay content
-const {Content, headings} = await render(essay);
+// Get table of contents from headings
+const tableOfContents = headings
+  .filter(heading => heading.depth <= 3)
+  .map(heading => ({
+    ...heading,
+    slug: heading.slug,
+    indent: `ml-${(heading.depth - 1) * 4}`
+  }));
+
+let readingProgress = 0;
 ---
 
-<BaseLayout title={essay.data.title}>
-  <article class="max-w-prose mx-auto">
-    <header class="mb-16">
-      <div class="font-mono text-sm mb-4 opacity-50">
-        {essay.data.date.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })}
-      </div>
-      
-      <h1 class="text-5xl mb-8">
-        {essay.data.title}
-      </h1>
+<BaseLayout title={`${essay.data.title} - Essay`}>
+  <!-- Reading Progress Bar -->
+  <div class="fixed top-0 left-0 w-full h-1 z-50 bg-gradient-to-r from-gray-100/20 via-gray-100/10 to-gray-100/20">
+    <div 
+      id="reading-progress" 
+      class="h-full bg-gradient-to-r from-gray-800/10 via-gray-800/20 to-gray-800/10 
+             backdrop-blur-[1px] transition-all duration-150 ease-out"
+      style="transform: scaleX(0); transform-origin: left;"
+    ></div>
+  </div>
 
-      {essay.data.summary && (
-        <p class="text-xl opacity-75 italic">
-          {essay.data.summary}
-        </p>
-      )}
+  <div class="max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Essay Header -->
+    <header class="mt-16 lg:mt-24 mb-12 lg:mb-16 max-w-4xl mx-auto">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <time 
+          datetime={essay.data.date.toISOString()}
+          class="font-mono text-xs text-gray-600"
+        >
+          {essay.data.date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </time>
+        <span class="font-mono text-xs text-gray-600">
+          {essay.id.split('/')[0]} • {readingTime} min read
+        </span>
+      </div>
+
+      <div class="space-y-8 border-y border-gray-200 py-12">
+        <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl leading-tight">
+          {essay.data.title}
+        </h1>
+        {essay.data.summary && (
+          <p class="text-lg sm:text-xl leading-relaxed text-gray-700">
+            {essay.data.summary}
+          </p>
+        )}
+        <div class="font-mono text-sm text-gray-600">
+          By {essay.data.persona}
+        </div>
+      </div>
     </header>
 
-    <div class="prose prose-lg">
-      <Content />
-    </div>
-
-    <footer class="mt-16 pt-8 border-t border-white/10">
-      <div class="font-mono text-sm">
-        Written by {essay.data.persona}
-      </div>
-      
-      {essay.data.topics.length > 0 && (
-        <div class="mt-4 flex gap-2 flex-wrap">
-          {essay.data.topics.map(topic => (
-            <span class="px-2 py-1 bg-white/5 rounded text-sm">
-              {extractTextFromMarkdownLink(topic)}
-            </span>
-          ))}
+    <!-- Mobile Topics (visible on mobile/tablet) -->
+    <div class="lg:hidden mb-12 max-w-4xl mx-auto">
+      {essay.data.topics?.length > 0 && (
+        <div class="space-y-4">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-gray-600">
+            Topics
+          </h2>
+          <div class="flex flex-wrap gap-2">
+            {essay.data.topics.map(topic => (
+              <a 
+                href={`/topics/${extractTextFromMarkdownLink(topic).toLowerCase().replace(/\s+/g, '-')}`}
+                class="font-mono text-xs px-3 py-1.5 border border-gray-200 
+                       hover:bg-gray-50 transition-colors rounded-sm"
+              >
+                {extractTextFromMarkdownLink(topic)}
+              </a>
+            ))}
+          </div>
         </div>
       )}
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16">
+      <!-- Left Sidebar (Topics only) -->
+      <aside class="hidden lg:block lg:col-span-3">
+        <div class="sticky top-8 space-y-12">
+          {essay.data.topics?.length > 0 && (
+            <nav>
+              <h2 class="font-mono text-xs uppercase tracking-widest mb-4 text-gray-600">
+                Topics
+              </h2>
+              <div class="flex flex-col gap-2">
+                {essay.data.topics.map(topic => (
+                  <a 
+                    href={`/topics/${extractTextFromMarkdownLink(topic).toLowerCase().replace(/\s+/g, '-')}`}
+                    class="font-mono text-xs px-3 py-1.5 border border-gray-200 hover:bg-gray-50 
+                           transition-colors rounded-sm"
+                  >
+                    {extractTextFromMarkdownLink(topic)}
+                  </a>
+                ))}
+              </div>
+            </nav>
+          )}
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <article class="lg:col-span-7">
+        <div class="prose prose-lg sm:prose-xl prose-stone max-w-none">
+          <Content />
+        </div>
+      </article>
+
+      <!-- Right Sidebar (Table of Contents and Related) -->
+      <aside class="hidden lg:block lg:col-span-2">
+        <div class="sticky top-8 space-y-12">
+          {tableOfContents.length > 0 && (
+            <nav>
+              <h2 class="font-mono text-xs uppercase tracking-widest mb-4 text-gray-600">
+                Contents
+              </h2>
+              <div class="space-y-3">
+                {tableOfContents.map(heading => (
+                  <a 
+                    href={`#${heading.slug}`}
+                    class={`block font-mono text-xs text-gray-600 hover:text-gray-900 
+                           transition-colors ${heading.indent} hover:bg-gray-50/50 
+                           rounded px-2 py-1 -mx-2`}
+                  >
+                    {heading.text}
+                  </a>
+                ))}
+              </div>
+            </nav>
+          )}
+
+          {essay.data.related?.length > 0 && (
+            <div>
+              <h2 class="font-mono text-xs uppercase tracking-widest mb-4 text-gray-600">
+                Related Essays
+              </h2>
+              <div class="space-y-3">
+                {essay.data.related.map(title => (
+                  <p class="font-mono text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                    {title}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </aside>
+    </div>
+
+    <!-- Mobile Related Essays (visible on mobile/tablet) -->
+    <div class="lg:hidden mt-16 max-w-4xl mx-auto">
+      {essay.data.related?.length > 0 && (
+        <div class="border-t border-gray-200 pt-8">
+          <h2 class="font-mono text-xs uppercase tracking-widest mb-4 text-gray-600">
+            Related Essays
+          </h2>
+          <div class="space-y-3">
+            {essay.data.related.map(title => (
+              <p class="font-mono text-sm text-gray-600">{title}</p>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- Footer with increased max width -->
+    <footer class="mt-24 lg:mt-32 mb-16 max-w-4xl mx-auto space-y-12">
+      {essay.data.sources?.length > 0 && (
+        <div class="border-t border-gray-200 pt-12">
+          <h2 class="font-mono text-xs uppercase tracking-widest mb-6 text-gray-600">
+            Sources & References
+          </h2>
+          <div class="space-y-3">
+            {essay.data.sources.map(source => (
+              <p class="font-mono text-sm text-gray-600">{source}</p>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="border-t border-gray-200 pt-12 text-center">
+        <p class="font-mono text-xs text-gray-600">
+          From the digital garden of {essay.data.persona}
+        </p>
+      </div>
     </footer>
-  </article>
+  </div>
 </BaseLayout>
+
+<script>
+  // Enhanced Reading Progress Bar
+  const updateReadingProgress = () => {
+    const article = document.querySelector('article');
+    if (!article) return;
+
+    const windowHeight = window.innerHeight;
+    const articleHeight = article.offsetHeight;
+    const articleTop = article.offsetTop;
+    const scrollTop = window.scrollY - articleTop;
+    const scrollHeight = articleHeight - windowHeight;
+    
+    const progress = Math.max(0, Math.min(1, scrollTop / scrollHeight));
+    const progressBar = document.getElementById('reading-progress');
+    if (progressBar) {
+      progressBar.style.transform = `scaleX(${progress})`;
+      // Add a subtle blur effect based on progress
+      progressBar.style.backdropFilter = `blur(${progress * 2}px)`;
+      // Add gradient opacity change
+      const opacity = 0.1 + (progress * 0.2);
+      progressBar.style.background = `linear-gradient(to right, 
+        rgba(31, 41, 55, ${opacity}) 0%, 
+        rgba(31, 41, 55, ${opacity * 1.5}) 50%, 
+        rgba(31, 41, 55, ${opacity}) 100%)`;
+    }
+  };
+
+  // Track active section in table of contents
+  const updateActiveSection = () => {
+    const headings = document.querySelectorAll('h2, h3');
+    const tocLinks = document.querySelectorAll('aside nav a');
+    
+    let currentSection = '';
+    
+    headings.forEach(heading => {
+      const top = heading.getBoundingClientRect().top;
+      if (top < window.innerHeight * 0.3) {
+        currentSection = heading.id;
+      }
+    });
+
+    tocLinks.forEach(link => {
+      const href = link.getAttribute('href')?.slice(1);
+      if (href === currentSection) {
+        link.classList.add('text-gray-900', 'bg-gray-50/75');
+      } else {
+        link.classList.remove('text-gray-900', 'bg-gray-50/75');
+      }
+    });
+  };
+
+  // Throttled scroll handler
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateReadingProgress();
+        updateActiveSection();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+  
+  window.addEventListener('resize', () => {
+    updateReadingProgress();
+    updateActiveSection();
+  }, { passive: true });
+
+  // Initial update
+  updateReadingProgress();
+  updateActiveSection();
+</script>
+
+<style is:global>
+  .prose {
+    --tw-prose-body: theme('colors.gray.700');
+    --tw-prose-headings: theme('colors.gray.900');
+    --tw-prose-links: theme('colors.gray.900');
+    --tw-prose-bold: theme('colors.gray.900');
+    --tw-prose-counters: theme('colors.gray.500');
+    --tw-prose-bullets: theme('colors.gray.500');
+    --tw-prose-quotes: theme('colors.gray.900');
+    --tw-prose-code: theme('colors.gray.900');
+    --tw-prose-hr: theme('colors.gray.200');
+    --tw-prose-quote-borders: theme('colors.gray.200');
+    max-width: none;
+  }
+
+  .prose :where(p, ul, ol) {
+    @apply leading-relaxed mb-6;
+  }
+
+  .prose :where(h1, h2, h3, h4) {
+    @apply font-serif font-normal tracking-tight mt-12 mb-6 scroll-mt-16;
+  }
+
+  .prose :where(h2) {
+    @apply text-3xl sm:text-4xl;
+  }
+
+  .prose :where(h3) {
+    @apply text-2xl sm:text-3xl;
+  }
+
+  .prose :where(a) {
+    @apply no-underline border-b border-gray-300 transition-colors hover:border-gray-600;
+  }
+
+  .prose :where(code):not(:where(pre code)) {
+    @apply font-mono text-sm bg-gray-100 px-2 py-0.5 rounded;
+  }
+
+  .prose :where(pre) {
+    @apply bg-gray-900 text-white overflow-x-auto font-mono text-sm leading-relaxed 
+           my-8 rounded-md p-4;
+  }
+
+  .prose :where(blockquote) {
+    @apply font-serif italic border-l-2 pl-6 text-gray-600 my-8;
+  }
+
+  .prose :where(figure) {
+    @apply my-8;
+  }
+
+  .prose :where(figure figcaption) {
+    @apply font-mono text-sm text-gray-600 mt-4;
+  }
+
+  .prose :where(img) {
+    @apply rounded-md shadow-sm my-8;
+  }
+
+  @media (min-width: 1280px) {
+    .prose {
+      font-size: 1.125rem;
+      line-height: 1.8;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .prose {
+      font-size: 1.1875rem;
+      line-height: 1.85;
+    }
+  }
+
+  .topic-button {
+    @apply font-mono text-xs px-3 py-1.5 border border-gray-200 
+           hover:bg-gray-50 transition-colors rounded-sm
+           whitespace-normal break-words max-w-[200px] inline-block;
+  }
+</style>
