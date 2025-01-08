@@ -7,15 +7,13 @@ topics:
   - "[Stoicism](Stoicism.md)"
 related:
   - "[Two minds](Two%20minds.md)"
-summary: 
+summary: A self-reflection on the origin of mental thoughts. Both the voice of reason and desire can sound exactly the same internally. There must be a way of differentiating where those thoughts originate.
 title: Will and desire
-persona: Anonymous
-status: WIP
+persona: Stoic
+status: Done
 draft: true
 sources: 
 ---
-
-Summary::
 
 The voice of desire can be intoxicating. It can cloud all reason until the only thing left is the will, the thing doing the experiencing. The object of which the voice of desire and reason speak. So, this calls for the follow up question: how do we prevent ourselfs from being succumb to the voice of desire? Better yet, why even attempt to prevent being succumbed? The voice of desire is one that us clearly got its uses. It speaks to what the body requires. It is the same voice that demands food when hungry, water when thirsty and more sleep when tired. Having a faculty such as this clearly could be said to have its purpose as a reminding mechanism to essential survival requirements. However, it's limitations are that there can be no limitations on its requirements beyond that of what is actually required to preserve a health body. This is where the faculty of desire fails and that we have been imbued with the gift of reason. The voice which is able to analyse a set of external circumstances or internal ideals and apply them. The limitations of this voice, however, is that it takes practice to feel its authority. To have it command stronger than the voice of desire. Especially since the voice of desire fails to hear reason as a justification to any unmet needs (whether proper needs or fanciful). The nature of desire is that it can often grow as a person's means and needs are met. It is never truly satisfied and therein lies part of the human condition which philosophers have quarrelled for centuries. Especially eastern philosophers such as Buddah who recognised that suffering was the cause of unmet desires. 
 
