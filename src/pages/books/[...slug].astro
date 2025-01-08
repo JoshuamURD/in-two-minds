@@ -2,20 +2,11 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { slugify } from '../../utils/path';
+import { cleanMarkdownLink, slugify } from '../../utils/path';
 
 export async function getStaticPaths() {
   const books = await getCollection('books');
   return books.map(book => {
-    const pathSegments = book.id.split('/');
-    const filename = pathSegments[pathSegments.length - 1];
-    
-    const slug = filename
-      .replace(/\.md$/, '')
-      .toLowerCase()
-      .replace(/\s+[-]\s+/g, '-') 
-      .replace(/\s+/g, '-'); 
-      
     return {
       params: { slug: book.id},
       props: { book },
@@ -72,7 +63,7 @@ const {Content} = await render(book);
         <div class="font-mono text-xs uppercase tracking-widest mb-4 opacity-70">Topics of Discussion</div>
         <div class="flex gap-3 flex-wrap">
           {topics.map(topic => {
-            const topicName = topic.match(/\[\[([^\]]+)\]\]/)?.[1] || topic;
+            const topicName = cleanMarkdownLink(topic);
             return (
               <a 
                 href={`/topics/${slugify(topicName)}`}
