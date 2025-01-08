@@ -137,7 +137,7 @@ const { title, description = "A neo-renaissance, philosophical and brutalist blo
   if (mobileMenuButton && mobileMenu) {
     mobileMenuButton.addEventListener('click', () => {
       const expanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
-      mobileMenuButton.setAttribute('aria-expanded', !expanded);
+      mobileMenuButton.setAttribute('aria-expanded', String(!expanded));
       mobileMenu.classList.toggle('hidden');
     });
   }

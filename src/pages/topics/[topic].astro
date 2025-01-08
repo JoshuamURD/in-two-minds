@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import { getCollection } from 'astro:content';
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { cleanWikiLink } from '../../components/utils/path';
+import { cleanWikiLink } from '../../utils/path';
 
 export const getStaticPaths = (async () => {
   const [allEssays, allBooks] = await Promise.all([
@@ -10,7 +10,7 @@ export const getStaticPaths = (async () => {
     getCollection('books')
   ]);
   
-  // Extract all unique topics from both essays and books
+  // Extract all unique topics and normalize them
   const topics = [...new Set([
     ...allEssays.flatMap(essay => 
       essay.data.topics.map(topic => {
@@ -26,7 +26,6 @@ export const getStaticPaths = (async () => {
     )
   ])];
 
-  // Create URL-friendly slugs and maintain original names
   return topics.map(topic => ({
     params: { 
       topic: topic
@@ -34,11 +33,17 @@ export const getStaticPaths = (async () => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '')
     },
-    props: { topicName: topic }
+    props: { 
+      topicName: topic,
+      topicSlug: topic
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+    }
   }));
 }) satisfies GetStaticPaths;
 
-const { topicName } = Astro.props;
+const { topicName, topicSlug } = Astro.props;
 
 // Get all content for this topic
 const [allEssays, allBooks] = await Promise.all([
@@ -46,19 +51,26 @@ const [allEssays, allBooks] = await Promise.all([
   getCollection('books')
 ]);
 
+const normalizeTopicForComparison = (topic: string) => {
+  const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
+  const cleanTopic = match ? match[1] : topic;
+  return {
+    original: cleanTopic,
+    slug: cleanTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  };
+};
+
 const topicEssays = allEssays.filter(essay => 
   essay.data.topics.some(topic => {
-    const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
-    const cleanTopic = match ? match[1] : topic;
-    return cleanTopic === topicName;
+    const normalized = normalizeTopicForComparison(topic);
+    return normalized.original === topicName || normalized.slug === topicSlug;
   })
 );
 
 const topicBooks = allBooks.filter(book => 
   book.data.topics?.some(topic => {
-    const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
-    const cleanTopic = match ? match[1] : topic;
-    return cleanTopic === topicName;
+    const normalized = normalizeTopicForComparison(topic);
+    return normalized.original === topicName || normalized.slug === topicSlug;
   })
 );
 

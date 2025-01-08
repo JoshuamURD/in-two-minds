@@ -1,15 +1,29 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { cleanWikiLink, slugify } from '../utils/path';
+import { getFeaturedTopics } from '../utils/topics';
 
 const essays = (await getCollection('essays')).slice(0, 4);
 const allEssays = await getCollection('essays');
-const topics = [...new Set(allEssays.flatMap(essay => 
-  essay.data.topics.map(topic => {
-    const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
-    return match ? match[1] : topic;
-  })
-))].sort();
+const allBooks = await getCollection('books');
+
+const featuredTopics = await getFeaturedTopics(6);
+
+const topics = [...new Set([
+  ...allEssays.flatMap(essay => 
+    essay.data.topics.map(topic => {
+      const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      return match ? match[1] : topic;
+    })
+  ),
+  ...allBooks.flatMap(book => 
+    book.data.topics?.map(topic => {
+      const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      return match ? cleanWikiLink(match[1]) : cleanWikiLink(topic);
+    }) || []
+  )
+])].sort();
 
 const today = new Date().toLocaleDateString('en-US', {
   year: 'numeric',
@@ -36,7 +50,7 @@ const today = new Date().toLocaleDateString('en-US', {
       </h1>
       <div class="max-w-xl">
         <p class="font-mono text-sm leading-relaxed border-l-2 border-black pl-4">
-          A digital garden exploring the depths of philosophy, ethics, and systems thinking through multiple lenses and personas.
+          A digital garden exploring philosophy, ethics, and systems thinking through multiple lenses and personas.
         </p>
       </div>
     </section>
@@ -44,10 +58,10 @@ const today = new Date().toLocaleDateString('en-US', {
     <!-- Featured Essays -->
     <section class="mb-24">
       <div class="border-t-2 border-b-2 border-black py-12">
-        <div class="grid md:grid-cols-2 gap-12 md:gap-24">
+        <div class="grid md:grid-cols-2 gap-12 md:gap-20">
           {essays.map((essay, index) => (
-            <article class="group">
-              <a href={`/essays/${essay.id.replace(/\.md$/, '').toLowerCase().replace(/\s+/g, '-')}`} 
+            <article>
+              <a href={`/essays/${slugify(essay.id)}`} 
                  class="block">
                 <div class="font-mono text-xs mb-4 flex items-center">
                   <span class="opacity-50 mr-4">{String(index + 1).padStart(2, '0')}</span>
@@ -70,11 +84,18 @@ const today = new Date().toLocaleDateString('en-US', {
 
     <!-- Topics and Quote Grid -->
     <div class="grid md:grid-cols-2 gap-12 md:gap-24 mb-24">
-      <!-- Topics -->
+      <!-- Featured Topics -->
       <section>
-        <h2 class="font-mono text-xs uppercase tracking-widest mb-8">Topics of Inquiry</h2>
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="font-mono text-xs uppercase tracking-widest">Featured Topics</h2>
+          <a href="/topics" class="font-mono text-xs opacity-70 hover:opacity-100 transition-opacity">
+            View All →
+          </a>
+        </div>
+        
+        <!-- Show only first 6-8 topics or featured ones -->
         <div class="grid grid-cols-2 gap-4">
-          {topics.map(topic => (
+          {featuredTopics.map(topic => (
             <a href={`/topics/${topic.toLowerCase()}`} 
                class="group flex items-center">
               <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity">

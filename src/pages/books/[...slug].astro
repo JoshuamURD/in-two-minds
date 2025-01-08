@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { slugify } from '../../components/utils/path';
+import { slugify } from '../../utils/path';
 
 export async function getStaticPaths() {
   const books = await getCollection('books');

@@ -1,125 +1,31 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { slugify, cleanWikiLink } from '../../components/utils/path';
+import { getTopicGroups } from '../../utils/topics';
 
-// Get all essays and books
-const [allEssays, allBooks] = await Promise.all([
-  getCollection('essays'),
-  getCollection('books')
-]);
-
-// Extract and count topics from both essays and books
-const topicStats = new Map();
-
-// Process essays
-allEssays.forEach(essay => {
-  essay.data.topics.forEach(topic => {
-    // Handle both wiki-style and markdown-style links
-    let cleanTopic = topic;
-    // Remove wiki-style brackets
-    cleanTopic = cleanTopic.replace(/\[\[|\]\]/g, '');
-    // Remove markdown-style links
-    cleanTopic = cleanTopic.replace(/\[(.*?)\]\(.*?\)/g, '$1');
-    // Clean any remaining special characters
-    cleanTopic = cleanWikiLink(cleanTopic);
-    if (!topicStats.has(cleanTopic)) {
-      topicStats.set(cleanTopic, { essays: 0, books: 0, totalItems: 0 });
-    }
-    const stats = topicStats.get(cleanTopic);
-    stats.essays++;
-    stats.totalItems++;
-  });
-});
-
-// Process books
-allBooks.forEach(book => {
-  book.data.topics?.forEach(topic => {
-    // Handle both wiki-style and markdown-style links
-    let cleanTopic = topic;
-    // Remove wiki-style brackets
-    cleanTopic = cleanTopic.replace(/\[\[|\]\]/g, '');
-    // Remove markdown-style links
-    cleanTopic = cleanTopic.replace(/\[(.*?)\]\(.*?\)/g, '$1');
-    // Clean any remaining special characters
-    cleanTopic = cleanWikiLink(cleanTopic);
-    if (!topicStats.has(cleanTopic)) {
-      topicStats.set(cleanTopic, { essays: 0, books: 0, totalItems: 0 });
-    }
-    const stats = topicStats.get(cleanTopic);
-    stats.books++;
-    stats.totalItems++;
-  });
-});
-
-// Convert to array and sort by total items (descending)
-const sortedTopics = Array.from(topicStats.entries())
-  .sort((a, b) => b[1].totalItems - a[1].totalItems);
-
-const totalItems = sortedTopics.reduce((acc, [_, stats]) => 
-  acc + stats.totalItems, 0
-);
+const topicGroups = await getTopicGroups();
 ---
 
-<BaseLayout title="Topics • In Two Minds">
-  <div class="max-w-6xl mx-auto px-4 md:px-8">
-    <!-- Header -->
-    <section class="mt-12 md:mt-24 mb-24">
-      <div class="mb-8">
-        <div class="inline-block border border-black px-3 py-1">
-          <span class="font-mono text-xs tracking-wider">TOPICS INDEX</span>
-        </div>
-      </div>
-      
-      <h1 class="font-serif text-4xl md:text-6xl mb-8 leading-none">Knowledge Atlas</h1>
-      <div class="max-w-xl">
-        <p class="font-mono text-sm leading-relaxed border-l-2 border-black pl-4">
-          A curated map of {sortedTopics.length} intellectual territories, containing {totalItems} pieces of content. Each topic forms a unique constellation of ideas, essays, and literary works.
-        </p>
-      </div>
-    </section>
-
-    <!-- Topics Grid -->
-    <section class="mb-24">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {sortedTopics.map(([topic, stats]) => {
-          const topicSlug = slugify(topic);
-          const percentage = Math.round((stats.totalItems / totalItems) * 100);
-          
-          return (
-            <article class="group relative">
-              <a 
-                href={`/topics/${topicSlug}`}
-                class="block border border-black/20 p-6 hover:border-black transition-colors"
-              >
-                <div class="absolute top-0 left-0 h-1 bg-black/80" style={`width: ${percentage}%`}></div>
-                
-                <h2 class="font-serif text-2xl mb-6 group-hover:translate-x-2 transition-transform">
+<BaseLayout title="Topics">
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="font-mono text-2xl mb-12">Topics</h1>
+    
+    <div class="grid gap-12">
+      {Object.entries(topicGroups).map(([letter, topics]) => (
+        <section>
+          <h2 class="font-mono text-xs uppercase tracking-widest mb-6">{letter}</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {topics.map(topic => (
+              <a href={`/topics/${topic.toLowerCase()}`}
+                 class="group flex items-center">
+                <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity">
+                  <span class="mr-2">→</span>
                   {topic}
-                </h2>
-                
-                <div class="flex justify-between items-end">
-                  <div class="font-mono text-xs space-y-1 opacity-70">
-                    <div>{stats.essays} {stats.essays === 1 ? 'essay' : 'essays'}</div>
-                    <div>{stats.books} {stats.books === 1 ? 'book' : 'books'}</div>
-                  </div>
-                  
-                  <div class="font-mono text-xs opacity-50">
-                    {percentage}%
-                  </div>
-                </div>
+                </span>
               </a>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="border-t border-black/20 py-8 mb-16">
-      <div class="font-mono text-xs text-center opacity-70">
-        Each percentage represents a topic's share of the total content collection
-      </div>
-    </footer>
-  </div>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </main>
 </BaseLayout>
