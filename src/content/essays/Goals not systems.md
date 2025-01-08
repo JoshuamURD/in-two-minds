@@ -12,6 +12,7 @@ topics:
 related: 
 sources:
   - "[Atomic Habits James Clear](Atomic%20Habits%20James%20Clear.md)"
+summary: How I plan to use what I've read about habit formation to achieve my goals this year
 ---
 
 James Clear, author of Atomic Habits says that today's understanding of habit research shows that people achieve their destination better through systems instead of goals. This is because systems take the reliance away from willpower, which is ineffective, and instead relies on the structure of a system that's easy to repeat and build on. He discusses the idea that it's better to aim for 1% better consistently than to try and go full on into a new way of living. It's obvious that there's a flaw in doing that anyway, it's most common for people to give up their new years resolution within the first few weeks of January. There is also a pass/fail type of mentality with goals. You either achieve your goals or you don't. There's no in-between, no room for error. 
