@@ -2,45 +2,31 @@ import { getCollection } from "astro:content";
 import { cleanWikiLink } from "./path";
 
 export async function getTopicGroups() {
-  // Get all essays and books
-  const [allEssays, allBooks] = await Promise.all([
-    getCollection("essays"),
+  const allContent = await Promise.all([
     getCollection("books"),
+    getCollection("essays"),
   ]);
 
-  // Extract unique topics from both essays and books
-  const topics = [
-    ...new Set([
-      ...allEssays.flatMap((essay) =>
-        essay.data.topics.map((topic) => {
-          const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
-          return match ? match[1] : topic;
-        })
-      ),
-      ...allBooks.flatMap(
-        (book) =>
-          book.data.topics?.map((topic) => {
-            const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
-            return match ? cleanWikiLink(match[1]) : cleanWikiLink(topic);
-          }) || []
-      ),
-    ]),
-  ].sort();
+  // Flatten all content
+  const allItems = allContent.flat();
 
-  // Group topics by first letter
-  const groups = topics.reduce((acc, topic) => {
-    const firstLetter = topic.charAt(0).toUpperCase();
-    if (!acc[firstLetter]) {
-      acc[firstLetter] = [];
-    }
-    acc[firstLetter].push(topic);
-    return acc;
-  }, {} as Record<string, string[]>);
-
-  // Sort topics within each group
-  Object.keys(groups).forEach((key) => {
-    groups[key].sort();
+  // Create a map of topics with their counts
+  const topicCounts = new Map();
+  allItems.forEach((item) => {
+    (item.data.topics || []).forEach((topic) => {
+      topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
+    });
   });
+
+  // Group topics by first letter with their counts
+  const groups = Array.from(topicCounts.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .reduce((acc, [topic, count]) => {
+      const letter = topic[0].toUpperCase();
+      if (!acc[letter]) acc[letter] = [];
+      acc[letter].push({ name: topic, count });
+      return acc;
+    }, {});
 
   return groups;
 }

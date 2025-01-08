@@ -1,31 +1,85 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getTopicGroups } from '../../utils/topics';
+import { cleanMarkdownLink,slugify } from '../../utils/path';
+
+function formatTopicName(str: string): string {
+    str = cleanMarkdownLink(str)
+  return str
+    .split(' ') // Split the string into an array of words
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word
+    .join(' '); // Join the words back into a single string
+}
+
 
 const topicGroups = await getTopicGroups();
 ---
 
 <BaseLayout title="Topics">
-  <main class="max-w-3xl mx-auto px-4 py-12">
-    <h1 class="font-mono text-2xl mb-12">Topics</h1>
-    
-    <div class="grid gap-12">
+  <div class="max-w-6xl mx-auto px-4 md:px-8">
+    <!-- Header section -->
+    <section class="mt-12 md:mt-24 mb-24">
+      <!-- Issue number and date -->
+      <div class="mb-8">
+        <div class="inline-block border border-black px-3 py-1">
+          <span class="font-mono text-xs">KNOWLEDGE ATLAS</span>
+        </div>
+      </div>
+      
+      <!-- Title and description -->
+      <h1 class="font-serif text-5xl md:text-7xl mb-8 leading-none">
+        TOPICS
+      </h1>
+      <div class="max-w-xl">
+        <p class="font-mono text-sm leading-relaxed border-l-2 border-black pl-4">
+          An index of all subjects, concepts, and themes explored throughout the garden.
+        </p>
+      </div>
+    </section>
+
+    <!-- Topics Grid -->
+    <div class="mb-24">
       {Object.entries(topicGroups).map(([letter, topics]) => (
-        <section>
-          <h2 class="font-mono text-xs uppercase tracking-widest mb-6">{letter}</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {topics.map(topic => (
-              <a href={`/topics/${topic.toLowerCase()}`}
-                 class="group flex items-center">
-                <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity">
-                  <span class="mr-2">→</span>
-                  {topic}
-                </span>
-              </a>
-            ))}
+        <section class="mb-16 last:mb-0">
+          <div class="border-t-2 border-black py-8">
+            <div class="flex items-baseline gap-8 mb-8">
+              <h2 class="font-serif text-6xl text-black/20">{letter}</h2>
+              <div class="w-full border-t border-black/10 self-center"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-x-16 gap-y-4">
+              {topics.map(({ name, count }) => (
+                <a href={`/topics/${slugify(cleanMarkdownLink(name))}`}
+                   class="group flex items-baseline justify-between py-3 border-b border-black/10">
+                  <div class="flex items-baseline gap-4">
+                    <span class="font-mono text-xs opacity-50 group-hover:opacity-100 transition-opacity">→</span>
+                    <span class="font-serif text-lg">{formatTopicName(name)}</span>
+                  </div>
+                  <span class="font-mono text-xs opacity-50">
+                    {count} {count === 1 ? 'entry' : 'entries'}
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
         </section>
       ))}
     </div>
-  </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-black/20 py-8 mb-24">
+      <div class="font-mono text-xs text-center">
+        <span class="opacity-70">A complete index of all explored topics</span>
+      </div>
+    </footer>
+  </div>
 </BaseLayout>
+
+<style>
+  /* Optional: Add custom font imports here */
+  main {
+    /* Create a subtle paper-like background */
+    background-color: #fcfcfc;
+    box-shadow: 0 0 64px rgba(0, 0, 0, 0.03);
+  }
+</style>
