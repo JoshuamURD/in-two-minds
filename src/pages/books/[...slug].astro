@@ -1,29 +1,29 @@
 ---
-// src/pages/books/[...slug].astro
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const books = await getCollection('books');
-  console.log(books)
   return books.map(book => {
-    // Handle the file path format: "White Nights - Fyodor Dostoyevsky.md"
     const pathSegments = book.id.split('/');
     const filename = pathSegments[pathSegments.length - 1];
     
-    // Remove .md and convert to kebab-case
     const slug = filename
       .replace(/\.md$/, '')
       .toLowerCase()
-      .replace(/\s+[-]\s+/g, '-') // Handle " - " between title and author
-      .replace(/\s+/g, '-'); // Handle remaining spaces
+      .replace(/\s+[-]\s+/g, '-') 
+      .replace(/\s+/g, '-'); 
       
     return {
       params: { slug: book.id},
       props: { book },
     };
   });
+}
+
+function slugify(str: string) {
+  return str.toLowerCase().replace(/\s+/g, '-');
 }
 
 const { book } = Astro.props;
@@ -76,7 +76,7 @@ const {Content, headings} = await render(book);
             const topicName = topic.match(/\[\[([^\]]+)\]\]/)?.[1] || topic;
             return (
               <a 
-                href={`/topics/${topicName.toLowerCase()}`}
+                href={`/topics/${slugify(topicName)}`}
                 class="font-mono text-xs px-3 py-1 border border-black/20 rounded-full hover:bg-black/5 transition-colors"
               >
                 {topicName}
