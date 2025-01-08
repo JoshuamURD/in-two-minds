@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { slugify } from '../../components/utils/path';
 
 export async function getStaticPaths() {
   const books = await getCollection('books');
@@ -22,9 +23,7 @@ export async function getStaticPaths() {
   });
 }
 
-function slugify(str: string) {
-  return str.toLowerCase().replace(/\s+/g, '-');
-}
+
 
 const { book } = Astro.props;
 const { title, author, publisher, publish, isbn, status, topics, cover } = book.data;
@@ -36,7 +35,7 @@ const dateCompleted = book.data['date-completed'] ? new Date(book.data['date-com
   day: 'numeric'
 }) : 'In Progress';
 
-const {Content, headings} = await render(book);
+const {Content} = await render(book);
 ---
 
 <BaseLayout title={`${title} - Book Notes`}>

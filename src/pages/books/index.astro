@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { slugify } from '../../components/utils/path';
 
 const books = await getCollection('books');
 
@@ -68,7 +69,7 @@ const allTopics = [
       <h2 class="font-mono text-xs uppercase tracking-widest mb-6">Browse by Topic</h2>
       <div class="flex flex-wrap gap-3">
         {allTopics.map(topic => (
-          <a href={`/topics/${topic.toLowerCase()}`} class="font-mono text-xs border border-black/20 px-3 py-1 hover:border-black transition-colors">
+          <a href={`/topics/${slugify(topic)}`} class="font-mono text-xs border border-black/20 px-3 py-1 hover:border-black transition-colors">
             {topic}
           </a>
         ))}

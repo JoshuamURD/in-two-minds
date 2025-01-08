@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import { getCollection } from 'astro:content';
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { cleanWikiLink } from '../../components/utils/path';
 
 export const getStaticPaths = (async () => {
   const [allEssays, allBooks] = await Promise.all([
@@ -71,12 +72,12 @@ const sortedBooks = topicBooks.sort((a, b) =>
 );
 ---
 
-<BaseLayout title={`${topicName} - In Two Minds`}>
+<BaseLayout title={`${cleanWikiLink(topicName)} - In Two Minds`}>
   <div class="max-w-4xl mx-auto px-8">
     <!-- Header -->
     <header class="mt-16 mb-24 border-b-[3px] border-black pb-8">
       <div class="font-mono text-xs mb-4 opacity-70">Topic</div>
-      <h1 class="font-serif text-6xl mb-8 leading-none">{topicName}</h1>
+      <h1 class="font-serif text-6xl mb-8 leading-none">{cleanWikiLink(topicName)}</h1>
       <div class="font-mono text-xs">
         {sortedEssays.length} {sortedEssays.length === 1 ? 'essay' : 'essays'} •
         {sortedBooks.length} {sortedBooks.length === 1 ? 'book' : 'books'}
@@ -129,7 +130,7 @@ const sortedBooks = topicBooks.sort((a, b) =>
                 {String(index + 1).padStart(2, '0')}
               </div>
               <div class="flex-1">
-                <a href={`/books/${book.slug}`} 
+                <a href={`/books/${book.id}`} 
                    class="block group-hover:translate-x-2 transition-transform duration-300">
                   <h3 class="font-serif text-3xl mb-4 leading-tight">
                     {book.data.title}
