@@ -96,13 +96,13 @@ const today = new Date().toLocaleDateString('en-US', {
           </a>
         </div>
         
-        <!-- Show only first 6-8 topics or featured ones -->
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Updated grid layout for topics -->
+        <div class="grid grid-cols-1 gap-2">
           {featuredTopics.map(topic => (
             <a href={`/topics/${topic.toLowerCase()}`} 
-               class="group flex items-center">
-              <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity">
-                <span class="mr-2">→</span>
+               class="group flex items-center border-b border-black/10 pb-2 last:border-b-0">
+              <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity truncate">
+                <span class="inline-block w-4 mr-2">→</span>
                 {topic}
               </span>
             </a>
