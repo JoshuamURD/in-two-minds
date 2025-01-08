@@ -33,7 +33,11 @@ const groupedBooks = sortedBooks.reduce<Record<string, typeof books>>((acc, book
   acc[status].push(book);
   return acc;
 }, {});
-
+Object.values(groupedBooks).forEach(books => {
+    books.forEach(book => {
+        console.log(book.data)
+    })
+});
 const statusDisplayOrder = ['reading', 'read', 'unread', 'on hold', 'listening'];
 
 // Get all unique topics
@@ -92,9 +96,10 @@ const allTopics = [
                 <a href={`/books/${book.id}`} class="block">
                   <div class="aspect-[3/4] mb-6 overflow-hidden border border-black/20 group-hover:border-black transition-colors">
                     <img 
-                      src={book.data.cover} 
+                      src={`${book.data.cover}&fife=w800`}
                       alt={`Cover of ${book.data.title}`}
                       class="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </div>
                   

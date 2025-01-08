@@ -17,6 +17,7 @@ const essaysCollection = defineCollection({
     topics: z.array(z.string()),
     related: z.array(z.string()).optional().nullable(),
     summary: z.string().nullable(),
+    sources: z.array(z.string()).optional().nullable(),
   }),
 });
 
