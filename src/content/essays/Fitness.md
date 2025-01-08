@@ -10,7 +10,7 @@ title: Fitness
 status: WIP
 persona: Anonymous
 draft: true
-summary: 
+summary: An essay on my methods to fitness
 ---
 
 I will be attempting to write a course about the simplest way to get fit or at least the optimal way without sacrificing too much sanity. 

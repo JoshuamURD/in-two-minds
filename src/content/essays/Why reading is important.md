@@ -6,8 +6,8 @@ tags:
 topics:
   - "[Reading](Reading.md)"
 title: Why reading is important
-persona: Anonymous
-status: WIP
+persona: Rationalist
+status: Done
 summary: An essay on why I think reading is important
 draft: true
 related: 
