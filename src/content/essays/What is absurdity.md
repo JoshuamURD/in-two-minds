@@ -7,17 +7,14 @@ topics:
   - "[Philosophy](Philosophy.md)"
   - "[Absurdity](Absurdity.md)"
 complete: true
-persona: Anonymous
-status: Done
+persona: Absurdist
+status: WIP
 related: 
 draft: true
 title: What is absurdity
 summary: 
 ---
-
-Summary::
-
-What is absurd? 
+# What is absurd? 
 What is absurd? First it would appear that we need to study what is reasonable and what is rational. Words are merely resonations from the vocal cords or attributed meaning to scribbles on a page. That is to say, the meaning of a phrase is primarily given by its author or by its colloquial. Relevantly, Oxford dictionary defines absurd to mean wildly unreasonable, illogical or inappropriate as it's primary meaning. It can be seen from this and from commentary by Albert Camus in the Myth of Sisyphus that absurdity has a precondition that an object (that be a person or inanimate) be at least one of: 
 • Unreasonable;
 • Irrational (inappropriate); 
