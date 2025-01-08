@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About - In Two Minds">
+  <div class="max-w-4xl mx-auto px-4 md:px-8">
+    <!-- Hero Section -->
+    <section class="mt-16 mb-24" id="hero-section">
+      <div class="mb-8">
+        <div class="inline-block border border-black px-3 py-1 fade-in">
+          <span class="font-mono text-xs">MANIFESTO</span>
+        </div>
+      </div>
+      <h1 class="font-serif text-5xl md:text-7xl mb-12 leading-tight slide-up">
+        A Digital Garden<br>of Dialectics
+      </h1>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section class="mb-24" id="philosophy-section">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-24">
+        <div>
+          <h2 class="font-mono text-xs uppercase tracking-widest mb-8 fade-in-scroll">Philosophy</h2>
+          <p class="text-lg mb-6 fade-in-scroll">
+            In Two Minds is an exploration of philosophical dialectics through multiple personas, 
+            each representing different modes of thinking and perspectives. It started as a study into stoicism and applying zettlekasten research methods. It has since expanded to include a wide range of topics and perspectives and a place for me to share my thoughts and ideas.
+          </p>
+          <p class="text-lg fade-in-scroll">
+            this space aims to synthesize different ways of thinking by conducting meaningful dialogue with schools of thought.
+          </p>
+        </div>
+        <div class="flip-quote">
+          <div class="flip-quote-inner">
+            <div class="flip-quote-front font-serif italic text-xl text-center p-8 bg-black/5">
+              "The test of a first-rate intelligence is the ability to hold two opposed ideas in mind 
+              at the same time and still retain the ability to function."
+              <footer class="text-sm mt-4 not-italic opacity-70">— F. Scott Fitzgerald</footer>
+            </div>
+            <div class="flip-quote-back font-serif italic text-xl text-center p-8 bg-black/5">
+              "Philosophy begins in wonder."
+              <footer class="text-sm mt-4 not-italic opacity-70">— Plato</footer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Methodology Section -->
+    <section class="mb-24" id="methodology-section">
+      <div class="border-t-2 border-b-2 border-black py-12">
+        <h2 class="font-mono text-xs uppercase tracking-widest mb-8 fade-in-scroll">Methodology</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="fade-in-scroll">
+            <h3 class="font-serif text-xl mb-4">Multiple Perspectives</h3>
+            <p class="text-sm opacity-70">
+              Each essay is written from a distinct persona, allowing for deep exploration of 
+              conflicting viewpoints and ideas.
+            </p>
+          </div>
+          <div class="fade-in-scroll">
+            <h3 class="font-serif text-xl mb-4">Digital Garden</h3>
+            <p class="text-sm opacity-70">
+              Content grows organically, with ideas cross-pollinating and evolving over time through 
+              interconnected notes and essays.
+            </p>
+          </div>
+          <div class="fade-in-scroll">
+            <h3 class="font-serif text-xl mb-4">Synthesis</h3>
+            <p class="text-sm opacity-70">
+              Drawing connections between philosophy, science, art, and contemporary issues to create 
+              new insights.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Personas Section -->
+    <section class="mb-24" id="personas-section">
+      <h2 class="font-mono text-xs uppercase tracking-widest mb-8 fade-in-scroll">The Personas</h2>
+      <div class="grid md:grid-cols-2 gap-12 md:gap-24">
+        <div class="hover-card p-8 bg-black/5 fade-in-scroll">
+          <h3 class="font-serif text-2xl mb-4">The Rationalist</h3>
+          <p class="text-sm opacity-70">
+            Approaches topics through logical analysis, empirical evidence, and systematic thinking.
+          </p>
+        </div>
+        <div class="hover-card p-8 bg-black/5 fade-in-scroll">
+          <h3 class="font-serif text-2xl mb-4">The Mystic</h3>
+          <p class="text-sm opacity-70">
+            Explores the ineffable, drawing from spiritual traditions and phenomenological experiences.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Personal Section -->
+    <section class="mb-24" id="contact-section">
+      <div class="max-w-xl">
+        <h2 class="font-mono text-xs uppercase tracking-widest mb-8 fade-in-scroll">Connect</h2>
+        <p class="text-lg mb-8 fade-in-scroll">
+          This garden is tended by a philosopher-programmer seeking to bridge the gap between 
+          technical and humanistic modes of thinking.
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Initial animations */
+  .fade-in {
+    animation: fadeIn 1s ease-out forwards;
+  }
+
+  .slide-up {
+    opacity: 0;
+    animation: slideUp 1s ease-out 0.3s forwards;
+  }
+
+  /* Scroll animations */
+  .fade-in-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Quote flip animation */
+  .flip-quote {
+    perspective: 1000px;
+    height: 300px;
+  }
+
+  .flip-quote-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    animation: flip 10s infinite linear;
+  }
+
+  .flip-quote-front,
+  .flip-quote-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .flip-quote-back {
+    transform: rotateY(180deg);
+  }
+
+  /* Hover effects */
+  .hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  }
+
+  .hover-link {
+    transition: transform 0.3s ease;
+  }
+
+  .hover-link:hover {
+    transform: translateX(5px);
+  }
+
+  /* Keyframes */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes flip {
+    0%, 45% { transform: rotateY(0deg); }
+    50%, 95% { transform: rotateY(180deg); }
+    100% { transform: rotateY(360deg); }
+  }
+
+  @media (max-width: 768px) {
+    .flip-quote {
+      height: 200px;
+    }
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1
+  });
+
+  // Observe all elements with fade-in-scroll class
+  document.querySelectorAll('.fade-in-scroll').forEach((element) => {
+    observer.observe(element);
+  });
+</script>
+
