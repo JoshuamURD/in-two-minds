@@ -1,0 +1,119 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  essays: CollectionEntry<'essays'>[];
+  books: CollectionEntry<'books'>[];
+}
+
+const { essays, books } = Astro.props;
+
+// Combine and sort all dates
+const dates = [
+  ...essays.map(essay => essay.data.date),
+  ...books.filter(book => book.data['date-completed']).map(book => book.data['date-completed']!)
+].sort((a, b) => a.getTime() - b.getTime());
+
+// Create activity data for the last year
+const today = new Date();
+const oneYearAgo = new Date(today);
+oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+// Create a map of date strings to counts
+const activityMap = new Map<string, number>();
+dates.forEach(date => {
+  if (date >= oneYearAgo) {
+    const dateStr = date.toISOString().split('T')[0];
+    activityMap.set(dateStr, (activityMap.get(dateStr) || 0) + 1);
+  }
+});
+
+// Generate cells for the last year
+interface Cell {
+  date: string;
+  count: number;
+  intensityClass: string;
+  month?: number;
+}
+
+const cells: Cell[] = [];
+const weekCount = 53;
+const dayCount = 7;
+
+for (let week = 0; week < weekCount; week++) {
+  for (let day = 0; day < dayCount; day++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - ((weekCount - week - 1) * 7 + (dayCount - day - 1)));
+    const dateStr = date.toISOString().split('T')[0];
+    const count = activityMap.get(dateStr) || 0;
+    
+    // Determine intensity class based on count
+    let intensityClass = 'bg-gray-100';
+    if (count > 0) intensityClass = 'bg-gray-300';
+    if (count > 1) intensityClass = 'bg-gray-400';
+    if (count > 2) intensityClass = 'bg-gray-500';
+    if (count > 3) intensityClass = 'bg-gray-600';
+
+    cells.push({
+      date: dateStr,
+      count,
+      intensityClass,
+      // Add month number if it's the first day of the month
+      month: date.getDate() === 1 ? date.getMonth() : undefined
+    });
+  }
+}
+
+const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+---
+
+<div class="mb-8">
+  <h2 class="font-mono text-xs uppercase tracking-widest mb-4">Activity</h2>
+  <div class="relative max-w-2xl">
+    <!-- Month labels -->
+    <div class="absolute -top-5 left-0 right-0 flex">
+      {Array(weekCount).fill(0).map((_, weekIndex) => {
+        const cell = cells[weekIndex * 7];
+        return (
+          <div class="flex-1 text-center">
+            {cell.month !== undefined && 
+              <span class="font-mono text-[10px] text-gray-500">
+                {monthNames[cell.month]}
+              </span>
+            }
+          </div>
+        );
+      })}
+    </div>
+    
+    <!-- Heatmap grid -->
+    <div class="flex gap-[2px]">
+      {Array(weekCount).fill(0).map((_, weekIndex) => (
+        <div class="flex flex-col gap-[2px]">
+          {Array(dayCount).fill(0).map((_, dayIndex) => {
+            const cell = cells[weekIndex * 7 + dayIndex];
+            return (
+              <div 
+                class={`w-[10px] h-[10px] rounded-[2px] ${cell.intensityClass}`}
+                title={`${cell.date}: ${cell.count} entries`}
+              />
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="flex items-center gap-2 mt-4">
+    <span class="font-mono text-xs opacity-70">Less</span>
+    <div class="flex gap-[2px]">
+      <div class="w-[10px] h-[10px] rounded-[2px] bg-gray-100"></div>
+      <div class="w-[10px] h-[10px] rounded-[2px] bg-gray-300"></div>
+      <div class="w-[10px] h-[10px] rounded-[2px] bg-gray-400"></div>
+      <div class="w-[10px] h-[10px] rounded-[2px] bg-gray-500"></div>
+      <div class="w-[10px] h-[10px] rounded-[2px] bg-gray-600"></div>
+    </div>
+    <span class="font-mono text-xs opacity-70">More</span>
+  </div>
+</div> 

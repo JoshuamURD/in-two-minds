@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { cleanWikiLink, slugify } from '../utils/path';
 import { getFeaturedTopics } from '../utils/topics';
+import ActivityHeatmap from '../components/ActivityHeatmap.astro';
 
 const essays = (await getCollection('essays')).slice(0, 4);
 const allEssays = await getCollection('essays');
@@ -54,6 +55,8 @@ const today = new Date().toLocaleDateString('en-US', {
         </p>
       </div>
     </section>
+
+
 
     <!-- Featured Essays -->
     <section class="mb-24">
@@ -152,6 +155,10 @@ const today = new Date().toLocaleDateString('en-US', {
           </ul>
         </div>
       </div>
+    </section>
+    <!-- Activity Heatmap -->
+    <section class="mb-24">
+      <ActivityHeatmap essays={allEssays} books={allBooks} />
     </section>
 
     <!-- Footer -->
