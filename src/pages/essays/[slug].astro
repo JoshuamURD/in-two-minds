@@ -50,7 +50,7 @@ let readingProgress = 0;
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <time 
           datetime={essay.data.date.toISOString()}
-          class="font-mono text-xs text-gray-600"
+          class="font-mono text-xs text-gray-600 dark:text-gray-400"
         >
           {essay.data.date.toLocaleDateString('en-US', {
             year: 'numeric',
@@ -58,21 +58,21 @@ let readingProgress = 0;
             day: 'numeric'
           })}
         </time>
-        <span class="font-mono text-xs text-gray-600">
+        <span class="font-mono text-xs text-gray-600 dark:text-gray-400">
           {essay.id.split('/')[0]} • {readingTime} min read
         </span>
       </div>
 
-      <div class="space-y-8 border-y border-gray-200 py-12">
+      <div class="space-y-8 border-y border-gray-200 dark:border-gray-700 py-12">
         <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl leading-tight">
           {essay.data.title}
         </h1>
         {essay.data.summary && (
-          <p class="text-lg sm:text-xl leading-relaxed text-gray-700">
+          <p class="text-lg sm:text-xl leading-relaxed text-gray-700 dark:text-gray-300">
             {essay.data.summary}
           </p>
         )}
-        <div class="font-mono text-sm text-gray-600">
+        <div class="font-mono text-sm text-gray-600 dark:text-gray-400">
           By {essay.data.persona}
         </div>
       </div>
@@ -82,15 +82,16 @@ let readingProgress = 0;
     <div class="lg:hidden mb-12 max-w-4xl mx-auto">
       {essay.data.topics?.length > 0 && (
         <div class="space-y-4">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-gray-600">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-gray-600 dark:text-gray-400">
             Topics
           </h2>
           <div class="flex flex-wrap gap-2">
             {essay.data.topics.map(topic => (
               <a 
                 href={`/topics/${extractTextFromMarkdownLink(topic).toLowerCase().replace(/\s+/g, '-')}`}
-                class="font-mono text-xs px-3 py-1.5 border border-gray-200 
-                       hover:bg-gray-50 transition-colors rounded-sm"
+                class="font-mono text-xs px-3 py-1.5 border border-gray-200 dark:border-gray-700 
+                       text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 
+                       transition-colors rounded-sm"
               >
                 {extractTextFromMarkdownLink(topic)}
               </a>
@@ -107,14 +108,15 @@ let readingProgress = 0;
         <div class="sticky top-8 space-y-16">
           {essay.data.topics?.length > 0 && (
             <nav class="space-y-6">
-              <h2 class="font-mono text-xs uppercase tracking-widest text-gray-600">
+              <h2 class="font-mono text-xs uppercase tracking-widest text-gray-600 dark:text-gray-400">
                 Topics
               </h2>
               <div class="flex flex-col gap-3">
                 {essay.data.topics.map(topic => (
                   <a 
                     href={`/topics/${extractTextFromMarkdownLink(topic).toLowerCase().replace(/\s+/g, '-')}`}
-                    class="font-mono text-xs px-3 py-1.5 border border-gray-200 hover:bg-gray-50 
+                    class="font-mono text-xs px-3 py-1.5 border border-gray-200 dark:border-gray-700 
+                           text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 
                            transition-colors rounded-sm"
                   >
                     {extractTextFromMarkdownLink(topic)}
@@ -128,7 +130,7 @@ let readingProgress = 0;
 
       <!-- Main Content -->
       <article class="lg:col-span-7">
-        <div class="prose prose-lg sm:prose-xl prose-stone max-w-none">
+        <div class="prose prose-lg sm:prose-xl prose-stone dark:prose-invert max-w-none">
           <Content />
         </div>
       </article>
@@ -140,7 +142,7 @@ let readingProgress = 0;
             <nav class="space-y-6">
               <button 
                 id="toc-toggle"
-                class="group w-full flex items-center justify-between font-mono text-xs uppercase tracking-widest text-gray-600 hover:text-gray-900"
+                class="group w-full flex items-center justify-between font-mono text-xs uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
               >
                 <div class="flex items-center gap-2">
                   <svg 
@@ -159,16 +161,17 @@ let readingProgress = 0;
                   </svg>
                   <span>Contents</span>
                 </div>
-                <span class="text-gray-400 text-[10px]">({tableOfContents.length})</span>
+                <span class="text-gray-400 dark:text-gray-500 text-[10px]">({tableOfContents.length})</span>
               </button>
               <div 
                 id="toc-content" 
-                class="hidden space-y-4 pl-5 border-l border-gray-200"
+                class="hidden space-y-4 pl-5 border-l border-gray-200 dark:border-gray-700"
               >
                 {tableOfContents.map(heading => (
                   <a 
                     href={`#${heading.slug}`}
-                    class={`block font-mono text-xs text-gray-600 hover:text-gray-900 
+                    class={`block font-mono text-xs text-gray-600 dark:text-gray-400 
+                           hover:text-gray-900 dark:hover:text-gray-100 
                            transition-colors ${heading.indent}`}
                   >
                     {heading.text}
@@ -180,12 +183,12 @@ let readingProgress = 0;
 
           {essay.data.related?.length > 0 && (
             <div>
-              <h2 class="font-mono text-xs uppercase tracking-widest mb-4 text-gray-600">
+              <h2 class="font-mono text-xs uppercase tracking-widest mb-4 text-gray-600 dark:text-gray-400">
                 Related Essays
               </h2>
               <div class="space-y-3">
                 {essay.data.related.map(title => (
-                  <p class="font-mono text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <p class="font-mono text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                     {title}
                   </p>
                 ))}
@@ -199,13 +202,13 @@ let readingProgress = 0;
     <!-- Mobile Related Essays (visible on mobile/tablet) -->
     <div class="lg:hidden mt-16 max-w-4xl mx-auto">
       {essay.data.related?.length > 0 && (
-        <div class="border-t border-gray-200 pt-8">
-          <h2 class="font-mono text-xs uppercase tracking-widest mb-4 text-gray-600">
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-8">
+          <h2 class="font-mono text-xs uppercase tracking-widest mb-4 text-gray-600 dark:text-gray-400">
             Related Essays
           </h2>
           <div class="space-y-3">
             {essay.data.related.map(title => (
-              <p class="font-mono text-sm text-gray-600">{title}</p>
+              <p class="font-mono text-sm text-gray-600 dark:text-gray-400">{title}</p>
             ))}
           </div>
         </div>
@@ -215,20 +218,20 @@ let readingProgress = 0;
     <!-- Footer with increased max width -->
     <footer class="mt-24 lg:mt-32 mb-16 max-w-4xl mx-auto space-y-12">
       {essay.data.sources?.length > 0 && (
-        <div class="border-t border-gray-200 pt-12">
-          <h2 class="font-mono text-xs uppercase tracking-widest mb-6 text-gray-600">
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-12">
+          <h2 class="font-mono text-xs uppercase tracking-widest mb-6 text-gray-600 dark:text-gray-400">
             Sources & References
           </h2>
           <div class="space-y-3">
             {essay.data.sources.map(source => (
-              <p class="font-mono text-sm text-gray-600">{source}</p>
+              <p class="font-mono text-sm text-gray-600 dark:text-gray-400">{source}</p>
             ))}
           </div>
         </div>
       )}
 
-      <div class="border-t border-gray-200 pt-12 text-center">
-        <p class="font-mono text-xs text-gray-600">
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-12 text-center">
+        <p class="font-mono text-xs text-gray-600 dark:text-gray-400">
           From the digital garden of {essay.data.persona}
         </p>
       </div>
@@ -270,6 +273,18 @@ let readingProgress = 0;
     --tw-prose-code: theme('colors.gray.900');
     --tw-prose-hr: theme('colors.gray.200');
     --tw-prose-quote-borders: theme('colors.gray.200');
+
+    /* Dark mode colors */
+    --tw-prose-invert-body: theme('colors.gray.300');
+    --tw-prose-invert-headings: theme('colors.gray.100');
+    --tw-prose-invert-links: theme('colors.gray.100');
+    --tw-prose-invert-bold: theme('colors.gray.100');
+    --tw-prose-invert-counters: theme('colors.gray.400');
+    --tw-prose-invert-bullets: theme('colors.gray.400');
+    --tw-prose-invert-quotes: theme('colors.gray.100');
+    --tw-prose-invert-code: theme('colors.gray.100');
+    --tw-prose-invert-hr: theme('colors.gray.700');
+    --tw-prose-invert-quote-borders: theme('colors.gray.700');
     max-width: none;
   }
 
@@ -290,20 +305,20 @@ let readingProgress = 0;
   }
 
   .prose :where(a) {
-    @apply no-underline border-b border-gray-300 transition-colors hover:border-gray-600;
+    @apply no-underline border-b border-gray-300 dark:border-gray-600 transition-colors hover:border-gray-600 dark:hover:border-gray-300;
   }
 
   .prose :where(code):not(:where(pre code)) {
-    @apply font-mono text-sm bg-gray-100 px-2 py-0.5 rounded;
+    @apply font-mono text-sm bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded;
   }
 
   .prose :where(pre) {
-    @apply bg-gray-900 text-white overflow-x-auto font-mono text-sm leading-relaxed 
+    @apply bg-gray-900 dark:bg-gray-800 text-white overflow-x-auto font-mono text-sm leading-relaxed 
            my-8 rounded-md p-4;
   }
 
   .prose :where(blockquote) {
-    @apply font-serif italic border-l-2 pl-6 text-gray-600 my-8;
+    @apply font-serif italic border-l-2 pl-6 text-gray-600 dark:text-gray-400 my-8;
   }
 
   .prose :where(figure) {
@@ -311,11 +326,11 @@ let readingProgress = 0;
   }
 
   .prose :where(figure figcaption) {
-    @apply font-mono text-sm text-gray-600 mt-4;
+    @apply font-mono text-sm text-gray-600 dark:text-gray-400 mt-4;
   }
 
   .prose :where(img) {
-    @apply rounded-md shadow-sm my-8;
+    @apply rounded-md shadow-sm dark:shadow-gray-800 my-8;
   }
 
   @media (min-width: 1280px) {
@@ -333,8 +348,8 @@ let readingProgress = 0;
   }
 
   .topic-button {
-    @apply font-mono text-xs px-3 py-1.5 border border-gray-200 
-           hover:bg-gray-50 transition-colors rounded-sm
-           whitespace-normal break-words max-w-[200px] inline-block;
+    @apply font-mono text-xs px-3 py-1.5 border border-gray-200 dark:border-gray-700 
+           text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 
+           transition-colors rounded-sm whitespace-normal break-words max-w-[200px] inline-block;
   }
 </style>

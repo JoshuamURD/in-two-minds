@@ -67,3 +67,55 @@ export async function getFeaturedTopics(limit = 6) {
     .slice(0, limit)
     .map(([topic]) => topic);
 }
+
+export interface TopicConnection {
+  source: string;
+  target: string;
+}
+
+export async function getTopicConnections(): Promise<TopicConnection[]> {
+  const allEssays = await getCollection('essays');
+  const allBooks = await getCollection('books');
+  
+  const connections: TopicConnection[] = [];
+  
+  // Analyze essays
+  allEssays.forEach(essay => {
+    const topics = essay.data.topics.map(topic => {
+      const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      return match ? match[1] : topic;
+    });
+    
+    // Create connections between all topics in the same essay
+    for (let i = 0; i < topics.length; i++) {
+      for (let j = i + 1; j < topics.length; j++) {
+        connections.push({
+          source: cleanWikiLink(topics[i]),
+          target: cleanWikiLink(topics[j])
+        });
+      }
+    }
+  });
+  
+  // Analyze books
+  allBooks.forEach(book => {
+    if (!book.data.topics) return;
+    
+    const topics = book.data.topics.map(topic => {
+      const match = topic.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      return match ? match[1] : topic;
+    });
+    
+    // Create connections between all topics in the same book
+    for (let i = 0; i < topics.length; i++) {
+      for (let j = i + 1; j < topics.length; j++) {
+        connections.push({
+          source: cleanWikiLink(topics[i]),
+          target: cleanWikiLink(topics[j])
+        });
+      }
+    }
+  });
+  
+  return connections;
+}

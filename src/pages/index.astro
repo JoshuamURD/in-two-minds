@@ -2,14 +2,16 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { cleanWikiLink, slugify } from '../utils/path';
-import { getFeaturedTopics } from '../utils/topics';
+import { getFeaturedTopics, getTopicConnections } from '../utils/topics';
 import ActivityHeatmap from '../components/ActivityHeatmap.astro';
+import TopicNetwork from '../components/TopicNetwork';
 
 const essays = (await getCollection('essays')).slice(0, 4);
 const allEssays = await getCollection('essays');
 const allBooks = await getCollection('books');
 
 const featuredTopics = await getFeaturedTopics(6);
+const topicConnections = await getTopicConnections();
 
 const topics = [...new Set([
   ...allEssays.flatMap(essay => 
@@ -68,7 +70,7 @@ const today = new Date().toLocaleDateString('en-US', {
                  class="block">
                 <div class="font-mono text-xs mb-4 flex items-center">
                   <span class="opacity-50 mr-4">{String(index + 1).padStart(2, '0')}</span>
-                  <span class="opacity-70">{essay.data.date.toLocaleDateString('en-US', {
+                  <span class="opacity-70">{essay.data.date.toLocaleDateString('en-AU', {
                     year: 'numeric',
                     month: 'long'
                   })}</span>
@@ -159,6 +161,12 @@ const today = new Date().toLocaleDateString('en-US', {
     <!-- Activity Heatmap -->
     <section class="mb-24">
       <ActivityHeatmap essays={allEssays} books={allBooks} />
+    </section>
+
+    <!-- Topic Network -->
+    <section class="mb-24">
+      <h2 class="font-mono text-xs uppercase tracking-widest mb-8">Topic Network</h2>
+      <TopicNetwork client:load topics={topics} connections={topicConnections} />
     </section>
 
     <!-- Footer -->

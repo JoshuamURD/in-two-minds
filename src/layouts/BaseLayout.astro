@@ -1,6 +1,6 @@
 ---
 // src/layouts/BaseLayout.astro
-import ClientRouter from 'astro/components/ClientRouter.astro';
+import DarkModeToggle from '../components/DarkModeToggle.astro';
 
 interface Props {
 title: string;
@@ -22,12 +22,27 @@ const { title, description = "A neo-renaissance, philosophical and brutalist blo
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <script is:inline>
+    // Initialize dark mode on page load to avoid flash
+    const theme = (() => {
+      if (typeof localStorage !== 'undefined') {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    })();
+    document.documentElement.classList[theme === 'dark' ? 'add' : 'remove']('dark');
+  </script>
   <style>
     body {
-      background-color: #f5f5f5;
-      color: #333;
+      background-color: #ffffff;
+      color: #1a1a1a;
       font-family: 'Cormorant Garamond', serif;
       line-height: 1.6;
+    }
+    :root.dark body {
+      background-color: #121212;
+      color: #f8f8f8;
     }
     main {
       max-width: 800px;
@@ -36,37 +51,37 @@ const { title, description = "A neo-renaissance, philosophical and brutalist blo
     }
   </style>
 </head>
-<body class="min-h-screen">
-<header class="border-b border-black/20">
+<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+<header class="border-b border-gray-200 dark:border-gray-700">
   <nav class="max-w-6xl mx-auto px-4 md:px-8">
     <div class="flex items-center justify-between h-16">
       <!-- Logo/Home Link -->
-      <a href="/" class="font-mono text-xs tracking-widest hover:opacity-70 transition-opacity">
+      <a href="/" class="font-mono text-xs tracking-widest hover:opacity-80 transition-opacity">
         IN TWO MINDS
       </a>
 
       <!-- Desktop Navigation -->
       <ul class="hidden md:flex items-center space-x-8 font-mono text-xs tracking-widest">
         <li>
-          <a href="/essays" class="group flex items-center opacity-70 hover:opacity-100 transition-opacity">
+          <a href="/essays" class="group flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
             <span class="mr-2 group-hover:rotate-12 transition-transform">⌘</span>
             <span class="hover:translate-x-0.5 transition-transform">ESSAYS</span>
           </a>
         </li>
         <li>
-          <a href="/books" class="group flex items-center opacity-70 hover:opacity-100 transition-opacity">
+          <a href="/books" class="group flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
             <span class="mr-2 group-hover:rotate-12 transition-transform">⌥</span>
             <span class="hover:translate-x-0.5 transition-transform">BOOKS</span>
           </a>
         </li>
         <li>
-          <a href="/topics" class="group flex items-center opacity-70 hover:opacity-100 transition-opacity">
+          <a href="/topics" class="group flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
             <span class="mr-2 group-hover:rotate-12 transition-transform">◯</span>
             <span class="hover:translate-x-0.5 transition-transform">TOPICS</span>
           </a>
         </li>
         <li>
-          <a href="/about" class="group flex items-center opacity-70 hover:opacity-100 transition-opacity">
+          <a href="/about" class="group flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
             <span class="mr-2 group-hover:rotate-12 transition-transform">⊕</span>
             <span class="hover:translate-x-0.5 transition-transform">ABOUT</span>
           </a>
@@ -83,9 +98,9 @@ const { title, description = "A neo-renaissance, philosophical and brutalist blo
       >
         <span class="sr-only">Open menu</span>
         <div class="flex flex-col space-y-1.5 w-6">
-          <span class="w-full h-px bg-black transition-transform origin-right group-aria-expanded:rotate-45"></span>
-          <span class="w-full h-px bg-black transition-opacity group-aria-expanded:opacity-0"></span>
-          <span class="w-full h-px bg-black transition-transform origin-right group-aria-expanded:-rotate-45"></span>
+          <span class="w-full h-px bg-gray-900 dark:bg-gray-100 transition-transform origin-right group-aria-expanded:rotate-45"></span>
+          <span class="w-full h-px bg-gray-900 dark:bg-gray-100 transition-opacity group-aria-expanded:opacity-0"></span>
+          <span class="w-full h-px bg-gray-900 dark:bg-gray-100 transition-transform origin-right group-aria-expanded:-rotate-45"></span>
         </div>
       </button>
     </div>
@@ -95,28 +110,28 @@ const { title, description = "A neo-renaissance, philosophical and brutalist blo
       class="hidden md:hidden" 
       id="mobile-menu"
     >
-      <div class="pb-4 pt-2 border-t border-black/20">
+      <div class="pb-4 pt-2 border-t border-gray-200 dark:border-gray-700">
         <ul class="space-y-4 font-mono text-xs tracking-widest">
           <li>
-            <a href="/essays" class="flex items-center py-2 opacity-70 hover:opacity-100 transition-opacity">
+            <a href="/essays" class="flex items-center py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
               <span class="mr-2">⌘</span>
               <span>ESSAYS</span>
             </a>
           </li>
           <li>
-            <a href="/books" class="flex items-center py-2 opacity-70 hover:opacity-100 transition-opacity">
+            <a href="/books" class="flex items-center py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
               <span class="mr-2">⌥</span>
               <span>BOOKS</span>
             </a>
           </li>
           <li>
-            <a href="/topics" class="flex items-center py-2 opacity-70 hover:opacity-100 transition-opacity">
+            <a href="/topics" class="flex items-center py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
               <span class="mr-2">◯</span>
               <span>TOPICS</span>
             </a>
           </li>
           <li>
-            <a href="/about" class="flex items-center py-2 opacity-70 hover:opacity-100 transition-opacity">
+            <a href="/about" class="flex items-center py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
               <span class="mr-2">⊕</span>
               <span>ABOUT</span>
             </a>
@@ -129,6 +144,7 @@ const { title, description = "A neo-renaissance, philosophical and brutalist blo
   <main>
     <slot />
   </main>
+  <DarkModeToggle />
 </body>
 <script>
   const mobileMenuButton = document.getElementById('mobile-menu-button');
