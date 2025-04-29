@@ -3,7 +3,8 @@ date: 2025-04-29
 title: The Day The World Closed
 persona: Anonymous
 status: WIP
-tags: 
+tags:
+  - essay
 draft: true
 topics:
   - "[Human condition](Human%20condition.md)"
