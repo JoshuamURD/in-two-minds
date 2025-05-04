@@ -38,13 +38,90 @@ const today = new Date().toLocaleDateString('en-US', {
 ---
 
 <BaseLayout title="In Two Minds">
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(45deg); }
+      50% { transform: translateY(-10px) rotate(50deg); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+    }
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-2deg); }
+      75% { transform: rotate(2deg); }
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+      50% { box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); }
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes rotateIn {
+      from { transform: rotate(-5deg) scale(0.9); opacity: 0; }
+      to { transform: rotate(0) scale(1); opacity: 1; }
+    }
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes borderFlow {
+      0% { border-color: currentColor; }
+      50% { border-color: rgba(0,0,0,0.3); }
+      100% { border-color: currentColor; }
+    }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-pulse-slow { animation: pulse 4s ease-in-out infinite; }
+    .animate-slide-in { animation: slideIn 0.6s ease-out forwards; }
+    .animate-wave { animation: wave 4s ease-in-out infinite; }
+    .animate-glow { animation: glow 3s ease-in-out infinite; }
+    .animate-breathe { animation: breathe 8s ease-in-out infinite; }
+    .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+    .animate-slide-in-right { animation: slideInRight 0.8s ease-out forwards; }
+    .animate-rotate-in { animation: rotateIn 0.8s ease-out forwards; }
+    .animate-float-up { animation: floatUp 4s ease-in-out infinite; }
+    .animate-border-flow { animation: borderFlow 3s ease-in-out infinite; }
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .content-section {
+      transition: transform 0.3s ease;
+    }
+    .content-section:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+
   <!-- Main container -->
-  <div class="max-w-5xl mx-auto px-4 md:px-8">
+  <div class="max-w-5xl mx-auto px-4 md:px-8 animate-breathe">
     <!-- Hero section -->
     <section class="mt-12 md:mt-24 mb-32">
       <!-- Issue number and date -->
-      <div class="mb-8">
-        <div class="inline-block border-2 border-black dark:border-gray-700 px-4 py-2 rotate-[-2deg]">
+      <div class="mb-8 animate-slide-in">
+        <div class="inline-block border-2 border-black dark:border-gray-700 px-4 py-2 rotate-[-2deg] hover:rotate-0 transition-all duration-300 hover-lift">
           <span class="font-mono text-xs tracking-[0.2em]">VOL. II • {today}</span>
         </div>
       </div>
@@ -52,41 +129,41 @@ const today = new Date().toLocaleDateString('en-US', {
       <!-- Title and subtitle -->
       <div class="relative">
         <h1 class="font-serif text-6xl md:text-7xl lg:text-8xl mb-8 leading-[0.85] tracking-[-0.02em]">
-          <span class="block">IN TWO</span>
-          <span class="block ml-[-0.05em]">MINDS</span>
+          <span class="block animate-slide-in animate-wave">IN TWO</span>
+          <span class="block ml-[-0.05em] animate-slide-in animate-wave" style="animation-delay: 0.2s">MINDS</span>
         </h1>
-        <div class="absolute top-0 right-0 w-16 h-16 border-2 border-black dark:border-gray-700 rotate-45"></div>
+        <div class="absolute top-0 right-0 w-16 h-16 border-2 border-black dark:border-gray-700 rotate-45 animate-float animate-glow"></div>
       </div>
-      <div class="max-w-xl ml-[-0.5em]">
-        <p class="font-mono text-sm leading-relaxed border-l-4 border-black dark:border-gray-700 pl-4 italic">
+      <div class="max-w-xl ml-[-0.5em] animate-slide-in" style="animation-delay: 0.4s">
+        <p class="font-mono text-sm leading-relaxed border-l-4 border-black dark:border-gray-700 pl-4 italic hover:border-l-8 transition-all duration-300">
           A digital garden exploring philosophy, ethics, and systems thinking through multiple lenses and personas.
         </p>
       </div>
     </section>
 
     <!-- Featured Essays -->
-    <section class="mb-32">
+    <section class="mb-32 content-section">
       <div class="relative">
-        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-1deg]"></div>
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-1deg] hover:rotate-0 transition-all duration-500 animate-border-flow"></div>
         <div class="relative bg-white dark:bg-gray-900 p-8">
           <div class="grid md:grid-cols-2 gap-12 md:gap-16">
             {essays.map((essay, index) => (
-              <article class="group">
+              <article class="group transform hover:scale-[1.02] transition-all duration-300 hover-lift animate-fade-in-up" style={`animation-delay: ${index * 0.1}s`}>
                 <a href={`/essays/${slugify(essay.id)}`} 
                    class="block">
                   <div class="font-mono text-xs mb-4 flex items-center">
-                    <span class="opacity-50 mr-4">{String(index + 1).padStart(2, '0')}</span>
+                    <span class="opacity-50 mr-4 animate-pulse-slow">{String(index + 1).padStart(2, '0')}</span>
                     <span class="opacity-70">{essay.data.date.toLocaleDateString('en-AU', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
                     })}</span>
                   </div>
-                  <h2 class="font-serif text-2xl md:text-3xl mb-4 leading-tight group-hover:translate-x-2 transition-all">
+                  <h2 class="font-serif text-2xl md:text-3xl mb-4 leading-tight group-hover:translate-x-2 transition-all duration-300">
                     {essay.data.title}
                   </h2>
-                  <div class="font-mono text-xs opacity-70 mb-4">By {essay.data.persona}</div>
-                  <p class="text-sm opacity-70 leading-relaxed">{essay.data.summary}</p>
+                  <div class="font-mono text-xs opacity-70 mb-4 group-hover:opacity-100 transition-opacity duration-300">By {essay.data.persona}</div>
+                  <p class="text-sm opacity-70 leading-relaxed group-hover:opacity-100 transition-opacity duration-300">{essay.data.summary}</p>
                 </a>
               </article>
             ))}
@@ -96,17 +173,17 @@ const today = new Date().toLocaleDateString('en-US', {
     </section>
 
     <!-- Reading Highlights -->
-    <section class="mb-32">
+    <section class="mb-32 content-section">
       <div class="relative">
-        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-1"></div>
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-1 hover:rotate-0 transition-all duration-500 animate-border-flow"></div>
         <div class="relative bg-white dark:bg-gray-900 p-8">
           <div class="max-w-2xl mx-auto">
-            <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-6">Reading Highlights</h2>
-            <a href="https://readings.intwominds.blog" class="group block">
-              <h3 class="font-serif text-3xl md:text-4xl mb-4 leading-tight group-hover:translate-x-2 transition-all rotate-[-1deg]">
+            <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-6 animate-pulse-slow">Reading Highlights</h2>
+            <a href="https://readings.intwominds.blog" class="group block hover-lift animate-slide-in-right">
+              <h3 class="font-serif text-3xl md:text-4xl mb-4 leading-tight group-hover:translate-x-2 transition-all duration-300 rotate-[-1deg] group-hover:rotate-0">
                 Highlights from my reading journey
               </h3>
-              <p class="text-sm opacity-70 leading-relaxed italic">A curated collection of highlights and notes from my reading journey</p>
+              <p class="text-sm opacity-70 leading-relaxed italic group-hover:opacity-100 transition-opacity duration-300">A curated collection of highlights and notes from my reading journey</p>
             </a>
           </div>
         </div>
@@ -116,20 +193,20 @@ const today = new Date().toLocaleDateString('en-US', {
     <!-- Topics and Quote Grid -->
     <div class="grid md:grid-cols-2 gap-16 md:gap-24 mb-32">
       <!-- Featured Topics -->
-      <section>
+      <section class="content-section">
         <div class="flex justify-between items-center mb-8">
-          <h2 class="font-mono text-xs uppercase tracking-[0.3em]">Featured Topics</h2>
-          <a href="/topics" class="font-mono text-xs opacity-70 hover:opacity-100 transition-opacity">
+          <h2 class="font-mono text-xs uppercase tracking-[0.3em] animate-pulse-slow">Featured Topics</h2>
+          <a href="/topics" class="font-mono text-xs opacity-70 hover:opacity-100 transition-opacity duration-300 hover-lift">
             View All →
           </a>
         </div>
         
         <div class="grid grid-cols-1 gap-4">
-          {featuredTopics.map(topic => (
+          {featuredTopics.map((topic, index) => (
             <a href={`/topics/${topic.toLowerCase()}`} 
-               class="group flex items-center border-b-2 border-black dark:border-gray-700 pb-3 last:border-b-0">
-              <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity truncate">
-                <span class="inline-block w-4 mr-2">→</span>
+               class="group flex items-center border-b-2 border-black dark:border-gray-700 pb-3 last:border-b-0 hover:translate-x-2 transition-all duration-300 hover-lift animate-fade-in-up" style={`animation-delay: ${index * 0.1}s`}>
+              <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity duration-300 truncate">
+                <span class="inline-block w-4 mr-2 group-hover:translate-x-1 transition-transform duration-300 animate-float-up">→</span>
                 {topic}
               </span>
             </a>
@@ -138,11 +215,11 @@ const today = new Date().toLocaleDateString('en-US', {
       </section>
 
       <!-- Quote -->
-      <section>
-        <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8">Featured Quote</h2>
-        <blockquote class="font-serif text-xl md:text-2xl italic leading-relaxed rotate-[-1deg]">
+      <section class="content-section">
+        <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8 animate-pulse-slow">Featured Quote</h2>
+        <blockquote class="font-serif text-xl md:text-2xl italic leading-relaxed rotate-[-1deg] hover:rotate-0 transition-all duration-500 hover-lift animate-rotate-in">
           "The philosopher is not a citizen of any community of ideas. That is what makes him a philosopher."
-          <footer class="text-sm mt-6 not-italic opacity-70">
+          <footer class="text-sm mt-6 not-italic opacity-70 hover:opacity-100 transition-opacity duration-300">
             — Ludwig Wittgenstein
           </footer>
         </blockquote>
@@ -150,36 +227,36 @@ const today = new Date().toLocaleDateString('en-US', {
     </div>
 
     <!-- About Section -->
-    <section class="mb-32">
+    <section class="mb-32 content-section">
       <div class="relative">
-        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-2deg]"></div>
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-2deg] hover:rotate-0 transition-all duration-500 animate-border-flow"></div>
         <div class="relative bg-white dark:bg-gray-900 p-8">
           <div class="max-w-2xl">
-            <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8">About this Garden</h2>
-            <p class="text-base leading-relaxed mb-8 italic">
+            <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8 animate-pulse-slow">About this Garden</h2>
+            <p class="text-base leading-relaxed mb-8 italic hover:translate-x-2 transition-all duration-300 animate-fade-in-up">
               Here, I take on different personas and explore trains of thought, perhaps playing devil's advocate, providing extracts from books and exploring their ideas through different lenses. My goal is to create a space where thoughts can accumulate and develop over time.
             </p>
             <div class="font-mono text-sm">
-              <div class="mb-6 opacity-70">Notable inspirations:</div>
+              <div class="mb-6 opacity-70 animate-pulse-slow">Notable inspirations:</div>
               <ul class="grid grid-cols-2 gap-6">
                 <li>
-                  <a href="https://notes.andymatuschak.org" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
-                    <span class="mr-2">→</span>Andy Matuschak's Notes
+                  <a href="https://notes.andymatuschak.org" class="hover:underline opacity-70 hover:opacity-100 transition-opacity duration-300 group hover-lift animate-slide-in-right" style="animation-delay: 0.1s">
+                    <span class="mr-2 inline-block group-hover:translate-x-1 transition-transform duration-300 animate-float-up">→</span>Andy Matuschak's Notes
                   </a>
                 </li>
                 <li>
-                  <a href="https://gwern.net" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
-                    <span class="mr-2">→</span>Gwern
+                  <a href="https://gwern.net" class="hover:underline opacity-70 hover:opacity-100 transition-opacity duration-300 group hover-lift animate-slide-in-right" style="animation-delay: 0.2s">
+                    <span class="mr-2 inline-block group-hover:translate-x-1 transition-transform duration-300 animate-float-up">→</span>Gwern
                   </a>
                 </li>
                 <li>
-                  <a href="https://lesswrong.com" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
-                    <span class="mr-2">→</span>Less Wrong
+                  <a href="https://lesswrong.com" class="hover:underline opacity-70 hover:opacity-100 transition-opacity duration-300 group hover-lift animate-slide-in-right" style="animation-delay: 0.3s">
+                    <span class="mr-2 inline-block group-hover:translate-x-1 transition-transform duration-300 animate-float-up">→</span>Less Wrong
                   </a>
                 </li>
                 <li>
-                  <a href="https://100r.co" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
-                    <span class="mr-2">→</span>100r
+                  <a href="https://100r.co" class="hover:underline opacity-70 hover:opacity-100 transition-opacity duration-300 group hover-lift animate-slide-in-right" style="animation-delay: 0.4s">
+                    <span class="mr-2 inline-block group-hover:translate-x-1 transition-transform duration-300 animate-float-up">→</span>100r
                   </a>
                 </li>
               </ul>
@@ -190,9 +267,9 @@ const today = new Date().toLocaleDateString('en-US', {
     </section>
 
     <!-- Activity Heatmap -->
-    <section class="mb-32">
+    <section class="mb-32 content-section">
       <div class="relative">
-        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-1"></div>
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-1 hover:rotate-0 transition-all duration-500 animate-border-flow"></div>
         <div class="relative bg-white dark:bg-gray-900 p-8">
           <ActivityHeatmap essays={allEssays} books={allBooks} />
         </div>
@@ -200,11 +277,11 @@ const today = new Date().toLocaleDateString('en-US', {
     </section>
 
     <!-- Topic Network -->
-    <section class="mb-32">
+    <section class="mb-32 content-section">
       <div class="relative">
-        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-1deg]"></div>
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-1deg] hover:rotate-0 transition-all duration-500 animate-border-flow"></div>
         <div class="relative bg-white dark:bg-gray-900 p-8">
-          <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8">Topic Network</h2>
+          <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8 animate-pulse-slow">Topic Network</h2>
           <TopicNetwork client:load topics={topics} connections={topicConnections} />
         </div>
       </div>
@@ -213,7 +290,7 @@ const today = new Date().toLocaleDateString('en-US', {
     <!-- Footer -->
     <footer class="border-t-2 border-black dark:border-gray-700 py-8">
       <div class="font-mono text-xs text-center">
-        <span class="opacity-70">Published in the depths of the digital underground</span>
+        <span class="opacity-70 hover:opacity-100 transition-opacity duration-300 animate-pulse-slow">Published in the depths of the digital underground</span>
       </div>
     </footer>
   </div>
