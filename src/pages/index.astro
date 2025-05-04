@@ -39,73 +39,95 @@ const today = new Date().toLocaleDateString('en-US', {
 
 <BaseLayout title="In Two Minds">
   <!-- Main container -->
-  <div class="max-w-6xl mx-auto px-4 md:px-8">
+  <div class="max-w-5xl mx-auto px-4 md:px-8">
     <!-- Hero section -->
-    <section class="mt-12 md:mt-24 mb-24">
+    <section class="mt-12 md:mt-24 mb-32">
       <!-- Issue number and date -->
       <div class="mb-8">
-        <div class="inline-block border border-black px-3 py-1">
-          <span class="font-mono text-xs">VOL. II • {today}</span>
+        <div class="inline-block border-2 border-black dark:border-gray-700 px-4 py-2 rotate-[-2deg]">
+          <span class="font-mono text-xs tracking-[0.2em]">VOL. II • {today}</span>
         </div>
       </div>
       
       <!-- Title and subtitle -->
-      <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl mb-8 leading-none">
-        IN TWO<br>MINDS
-      </h1>
-      <div class="max-w-xl">
-        <p class="font-mono text-sm leading-relaxed border-l-2 border-black pl-4">
+      <div class="relative">
+        <h1 class="font-serif text-6xl md:text-7xl lg:text-8xl mb-8 leading-[0.85] tracking-[-0.02em]">
+          <span class="block">IN TWO</span>
+          <span class="block ml-[-0.05em]">MINDS</span>
+        </h1>
+        <div class="absolute top-0 right-0 w-16 h-16 border-2 border-black dark:border-gray-700 rotate-45"></div>
+      </div>
+      <div class="max-w-xl ml-[-0.5em]">
+        <p class="font-mono text-sm leading-relaxed border-l-4 border-black dark:border-gray-700 pl-4 italic">
           A digital garden exploring philosophy, ethics, and systems thinking through multiple lenses and personas.
         </p>
       </div>
     </section>
 
-
-
     <!-- Featured Essays -->
-    <section class="mb-24">
-      <div class="border-t-2 border-b-2 border-black py-12">
-        <div class="grid md:grid-cols-2 gap-12 md:gap-20">
-          {essays.map((essay, index) => (
-            <article>
-              <a href={`/essays/${slugify(essay.id)}`} 
-                 class="block">
-                <div class="font-mono text-xs mb-4 flex items-center">
-                  <span class="opacity-50 mr-4">{String(index + 1).padStart(2, '0')}</span>
-                  <span class="opacity-70">{essay.data.date.toLocaleDateString('en-AU', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}</span>
-                </div>
-                <h2 class="font-serif text-2xl md:text-3xl mb-4 leading-tight group-hover:translate-x-2 transition-all">
-                  {essay.data.title}
-                </h2>
-                <div class="font-mono text-xs opacity-70 mb-4">By {essay.data.persona}</div>
-                <p class="text-sm opacity-70">{essay.data.summary}</p>
-              </a>
-            </article>
-          ))}
+    <section class="mb-32">
+      <div class="relative">
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-1deg]"></div>
+        <div class="relative bg-white dark:bg-gray-900 p-8">
+          <div class="grid md:grid-cols-2 gap-12 md:gap-16">
+            {essays.map((essay, index) => (
+              <article class="group">
+                <a href={`/essays/${slugify(essay.id)}`} 
+                   class="block">
+                  <div class="font-mono text-xs mb-4 flex items-center">
+                    <span class="opacity-50 mr-4">{String(index + 1).padStart(2, '0')}</span>
+                    <span class="opacity-70">{essay.data.date.toLocaleDateString('en-AU', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}</span>
+                  </div>
+                  <h2 class="font-serif text-2xl md:text-3xl mb-4 leading-tight group-hover:translate-x-2 transition-all">
+                    {essay.data.title}
+                  </h2>
+                  <div class="font-mono text-xs opacity-70 mb-4">By {essay.data.persona}</div>
+                  <p class="text-sm opacity-70 leading-relaxed">{essay.data.summary}</p>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reading Highlights -->
+    <section class="mb-32">
+      <div class="relative">
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-1"></div>
+        <div class="relative bg-white dark:bg-gray-900 p-8">
+          <div class="max-w-2xl mx-auto">
+            <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-6">Reading Highlights</h2>
+            <a href="https://readings.intwominds.blog" class="group block">
+              <h3 class="font-serif text-3xl md:text-4xl mb-4 leading-tight group-hover:translate-x-2 transition-all rotate-[-1deg]">
+                Highlights from my reading journey
+              </h3>
+              <p class="text-sm opacity-70 leading-relaxed italic">A curated collection of highlights and notes from my reading journey</p>
+            </a>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Topics and Quote Grid -->
-    <div class="grid md:grid-cols-2 gap-12 md:gap-24 mb-24">
+    <div class="grid md:grid-cols-2 gap-16 md:gap-24 mb-32">
       <!-- Featured Topics -->
       <section>
         <div class="flex justify-between items-center mb-8">
-          <h2 class="font-mono text-xs uppercase tracking-widest">Featured Topics</h2>
+          <h2 class="font-mono text-xs uppercase tracking-[0.3em]">Featured Topics</h2>
           <a href="/topics" class="font-mono text-xs opacity-70 hover:opacity-100 transition-opacity">
             View All →
           </a>
         </div>
         
-        <!-- Updated grid layout for topics -->
-        <div class="grid grid-cols-1 gap-2">
+        <div class="grid grid-cols-1 gap-4">
           {featuredTopics.map(topic => (
             <a href={`/topics/${topic.toLowerCase()}`} 
-               class="group flex items-center border-b border-black/10 pb-2 last:border-b-0">
+               class="group flex items-center border-b-2 border-black dark:border-gray-700 pb-3 last:border-b-0">
               <span class="font-mono text-sm opacity-70 group-hover:opacity-100 transition-opacity truncate">
                 <span class="inline-block w-4 mr-2">→</span>
                 {topic}
@@ -117,10 +139,10 @@ const today = new Date().toLocaleDateString('en-US', {
 
       <!-- Quote -->
       <section>
-        <h2 class="font-mono text-xs uppercase tracking-widest mb-8">Featured Quote</h2>
-        <blockquote class="font-serif text-xl italic leading-relaxed">
+        <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8">Featured Quote</h2>
+        <blockquote class="font-serif text-xl md:text-2xl italic leading-relaxed rotate-[-1deg]">
           "The philosopher is not a citizen of any community of ideas. That is what makes him a philosopher."
-          <footer class="text-sm mt-4 not-italic opacity-70">
+          <footer class="text-sm mt-6 not-italic opacity-70">
             — Ludwig Wittgenstein
           </footer>
         </blockquote>
@@ -128,52 +150,68 @@ const today = new Date().toLocaleDateString('en-US', {
     </div>
 
     <!-- About Section -->
-    <section class="mb-24">
-      <div class="max-w-2xl">
-        <h2 class="font-mono text-xs uppercase tracking-widest mb-8">About this Garden</h2>
-        <p class="text-lg mb-8">
-          Here, I take on different personas and explore trains of thought, perhaps playing devil's advocate, providing extracts from books and exploring their ideas through different lenses. My goal is to create a space where thoughts can accumulate and develop over time.
-        </p>
-        <div class="font-mono text-sm">
-          <div class="mb-4 opacity-70">Notable inspirations:</div>
-          <ul class="grid grid-cols-2 gap-4">
-            <li>
-              <a href="https://notes.andymatuschak.org" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
-                <span class="mr-2">→</span>Andy Matuschak's Notes
-              </a>
-            </li>
-            <li>
-              <a href="https://gwern.net" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
-                <span class="mr-2">→</span>Gwern
-              </a>
-            </li>
-            <li>
-              <a href="https://lesswrong.com" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
-                <span class="mr-2">→</span>Less Wrong
-              </a>
-            </li>
-            <li>
-              <a href="https://100r.co" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
-                <span class="mr-2">→</span>100r
-              </a>
-            </li>
-          </ul>
+    <section class="mb-32">
+      <div class="relative">
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-2deg]"></div>
+        <div class="relative bg-white dark:bg-gray-900 p-8">
+          <div class="max-w-2xl">
+            <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8">About this Garden</h2>
+            <p class="text-base leading-relaxed mb-8 italic">
+              Here, I take on different personas and explore trains of thought, perhaps playing devil's advocate, providing extracts from books and exploring their ideas through different lenses. My goal is to create a space where thoughts can accumulate and develop over time.
+            </p>
+            <div class="font-mono text-sm">
+              <div class="mb-6 opacity-70">Notable inspirations:</div>
+              <ul class="grid grid-cols-2 gap-6">
+                <li>
+                  <a href="https://notes.andymatuschak.org" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
+                    <span class="mr-2">→</span>Andy Matuschak's Notes
+                  </a>
+                </li>
+                <li>
+                  <a href="https://gwern.net" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
+                    <span class="mr-2">→</span>Gwern
+                  </a>
+                </li>
+                <li>
+                  <a href="https://lesswrong.com" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
+                    <span class="mr-2">→</span>Less Wrong
+                  </a>
+                </li>
+                <li>
+                  <a href="https://100r.co" class="hover:underline opacity-70 hover:opacity-100 transition-opacity">
+                    <span class="mr-2">→</span>100r
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+
     <!-- Activity Heatmap -->
-    <section class="mb-24">
-      <ActivityHeatmap essays={allEssays} books={allBooks} />
+    <section class="mb-32">
+      <div class="relative">
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-1"></div>
+        <div class="relative bg-white dark:bg-gray-900 p-8">
+          <ActivityHeatmap essays={allEssays} books={allBooks} />
+        </div>
+      </div>
     </section>
 
     <!-- Topic Network -->
-    <section class="mb-24">
-      <h2 class="font-mono text-xs uppercase tracking-widest mb-8">Topic Network</h2>
-      <TopicNetwork client:load topics={topics} connections={topicConnections} />
+    <section class="mb-32">
+      <div class="relative">
+        <div class="absolute top-0 left-0 w-full h-full border-2 border-black dark:border-gray-700 rotate-[-1deg]"></div>
+        <div class="relative bg-white dark:bg-gray-900 p-8">
+          <h2 class="font-mono text-xs uppercase tracking-[0.3em] mb-8">Topic Network</h2>
+          <TopicNetwork client:load topics={topics} connections={topicConnections} />
+        </div>
+      </div>
     </section>
 
     <!-- Footer -->
-    <footer class="border-t border-black/20 py-8">
+    <footer class="border-t-2 border-black dark:border-gray-700 py-8">
       <div class="font-mono text-xs text-center">
         <span class="opacity-70">Published in the depths of the digital underground</span>
       </div>
