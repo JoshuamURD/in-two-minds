@@ -18,6 +18,11 @@ const essaysCollection = defineCollection({
     related: z.array(z.string()).optional().nullable(),
     summary: z.string().nullable(),
     sources: z.array(z.string()).optional().nullable(),
+    // SEO enhancements
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
+    seoKeywords: z.array(z.string()).optional(),
+    seoImage: z.string().url().optional(),
   }),
 });
 
@@ -53,6 +58,10 @@ const booksCollection = defineCollection({
     total: z.number().optional(),
     subtitle: z.string().optional(),
     category: z.array(z.string()).optional().nullable(),
+    // SEO enhancements
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
+    seoKeywords: z.array(z.string()).optional(),
   }),
 });
 
