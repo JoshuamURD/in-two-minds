@@ -54,7 +54,7 @@ const extractTextFromMarkdownLink = (markdownLink: string) => {
             </div>
             <div class="flex gap-2">
               {essay.data.topics.map((topic) => (
-                <span class="font-mono text-xs px-2 py-1 bg-black/5 rounded">
+                <span class="font-mono text-xs px-2 py-1 bg-black/5 dark:bg-white/10 rounded">
                   {extractTextFromMarkdownLink(topic)}
                 </span>
               ))}
@@ -62,12 +62,12 @@ const extractTextFromMarkdownLink = (markdownLink: string) => {
           </div>
 
           <!-- Hover Preview -->
-          <div class="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute left-0 top-full mt-2 p-6 bg-white shadow-lg max-w-xl z-10 border border-black/10">
+          <div class="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute left-0 top-full mt-2 p-6 bg-white dark:bg-gray-900 shadow-lg max-w-xl z-10 border border-black/10 dark:border-white/10">
             <p class="text-base opacity-70">
               {essay.data.summary}
             </p>
             {essay.data.related && essay.data.related.length > 0 && (
-              <div class="mt-4 pt-4 border-t border-black/10">
+              <div class="mt-4 pt-4 border-t border-black/10 dark:border-white/10">
                 <div class="font-mono text-xs opacity-50 mb-2">Related Essays</div>
                 <ul class="text-sm">
                   {essay.data.related.map((title) => (
@@ -96,6 +96,13 @@ const extractTextFromMarkdownLink = (markdownLink: string) => {
         transform: translate(-50%, -50%);
         width: 90vw;
         max-width: 400px;
+      }
+    }
+
+    /* Dark mode improvements */
+    @media (prefers-color-scheme: dark) {
+      .group:hover .absolute {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
       }
     }
   </style>
